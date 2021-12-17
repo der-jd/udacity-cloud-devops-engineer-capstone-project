@@ -8,13 +8,13 @@ LOG.setLevel(logging.INFO)
 
 @app.route("/")
 def home():
-    html = f"<h1>GetWise</h1>"
-    return html.format(format)
+    html = f"<h1>GetWise</h1>\n\n"
 
     # TODO: Get a random wisdom from the db
-    LOG.info(f"Wisdom: \n{wisdom}")
-    LOG.info(f"Source: \n{source}")
-    return jsonify({'Wisdom': wisdom, 'Source': source})
+    #LOG.info(f"Wisdom: \n{wisdom}")
+    #LOG.info(f"Source: \n{source}")
+    #return jsonify({'Wisdom': wisdom, 'Source': source})
+    return html.format(format) + "<p>Hello, World!</p>\n"
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=80, debug=True)
