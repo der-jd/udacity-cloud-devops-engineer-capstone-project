@@ -4,11 +4,11 @@ import logging
 import os
 import psycopg2
 
-connection = psycopg2.connect("dbname=" + os.environ["DATABASE_NAME"] +
-                              " user=" + os.environ["DATABASE_USERNAME"] +
-                              " password=" + os.environ["DATABASE_PASSWORD"] +
-                              " host=" + os.environ["DATABASE_HOST"] +
-                              " port=" + os.environ["DATABASE_PORT"])
+connection = psycopg2.connect(dbname = os.environ["DATABASE_NAME"],
+                              user = os.environ["DATABASE_USERNAME"],
+                              password = os.environ["DATABASE_PASSWORD"],
+                              host = os.environ["DATABASE_HOST"],
+                              port = os.environ["DATABASE_PORT"])
 # Open a cursor to perform database operations
 cursor = connection.cursor()
 # Execute a query
