@@ -20,23 +20,38 @@ def home():
 
     # Open a cursor to perform database operations
     cursor = connection.cursor()
-    # Execute a query
+
+    # Query for random wisdom
     cursor.execute("SELECT * FROM Wisdoms ORDER BY random() LIMIT 1")
     # Retrieve query results
     records = cursor.fetchall()
+    id_ = records[0][0]
     wisdom = records[0][1]
     source = records[0][2]
-    # TODO: add query for categories and images
-    cursor.close()
-
     LOG.info(f"Wisdom: \n{wisdom}")
     LOG.info(f"Source: \n{source}")
-    # TODO: log categories and image urls
-
-    html += wisdom + "\n\n"
+    html += f"<pre>" + wisdom + "</pre>\n\n"
     if source:
-        html += "source: " + source + "\n\n"
-    # TODO: output categories and image
+        html += f"<p>Source: " + source + "</p>\n\n"
+
+    # Query for wisdom categories
+    cursor.execute("SELECT category FROM Categories WHERE wisdomId = '" + str(id_) + "'")
+    categories = cursor.fetchall()
+    LOG.info(f"Categories:")
+    if categories:
+        html += f"<p>Categories:</p>\n"
+    for c in categories:
+        LOG.info(f"{c[0]}")
+        html += f"<p>" + c[0] + "</p>\n"
+
+    # Query for image urls
+    cursor.execute("SELECT imageUrl FROM Images WHERE wisdomId = '" + str(id_) + "'")
+    imageUrls = cursor.fetchall()
+    LOG.info(f"Image URLs:")
+    for u in imageUrls:
+        LOG.info(f"{u[0]}")
+        html += f"<img src=\"" + u[0] + "\">\n"
+    cursor.close()
 
     return html.format(format)
 
