@@ -5,6 +5,7 @@ import logging
 import os
 import psycopg2
 
+# https://www.postgresqltutorial.com/postgresql-python/connect/
 connection = psycopg2.connect(dbname = os.environ["DATABASE_NAME"],
                               user = os.environ["DATABASE_USERNAME"],
                               password = os.environ["DATABASE_PASSWORD"],
@@ -17,6 +18,12 @@ LOG.setLevel(logging.INFO)
 
 @app.route("/")
 def home():
+    html = f"<h1>Backend for GetWise</h1>\n\n"
+    html += f"<p>Visit <a href=\"./wisdom\">/wisdom</a> to get a JSON response.</p>\n"
+    return html.format(format)
+
+@app.route("/wisdom")
+def wisdom():
     # Open a cursor to perform database operations
     cursor = connection.cursor()
 
