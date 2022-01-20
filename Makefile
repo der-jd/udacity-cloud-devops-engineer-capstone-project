@@ -13,6 +13,8 @@ install:
 	# This should be run from inside a virtualenv
 	pip install --upgrade pip &&\
 		pip install -r requirements.txt
+	cd frontend &&\
+		npm install
 
 # Separated target to install hadolint because
 # target must be called locally with 'sudo' whereas on CircleCi it must be called without 'sudo'
