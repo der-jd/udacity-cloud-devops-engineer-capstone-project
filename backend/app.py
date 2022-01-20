@@ -17,8 +17,6 @@ LOG.setLevel(logging.INFO)
 
 @app.route("/")
 def home():
-    html = f"<h1>GetWise</h1>\n\n"
-
     # Open a cursor to perform database operations
     cursor = connection.cursor()
 
@@ -31,19 +29,13 @@ def home():
     source = records[0][2]
     LOG.info(f"Wisdom: \n{wisdom}")
     LOG.info(f"Source: \n{source}")
-    html += f"<pre>" + wisdom + "</pre>\n\n"
-    if source:
-        html += f"<p>Source: " + source + "</p>\n\n"
 
     # Query for wisdom categories
     cursor.execute("SELECT category FROM Categories WHERE wisdomId = '" + str(id_) + "'")
     categories_sql = cursor.fetchall()
-    if categories_sql:
-        html += f"<p>Categories:</p>\n"
     categories = []
     for c in categories_sql:
         categories.append(c[0])
-        html += f"<p>" + c[0] + "</p>\n"
     LOG.info(f"Categories:")
     LOG.info(f"{categories}")
 
@@ -53,12 +45,23 @@ def home():
     imageUrls = []
     for u in imageUrls_sql:
         imageUrls.append(u[0])
-        html += f"<img src=\"" + u[0] + "\">\n"
     LOG.info(f"Image URLs:")
     LOG.info(f"{imageUrls}")
     cursor.close()
 
+    ## Activate if backend should directly display results in html
+    #html = f"<h1>GetWise</h1>\n\n"
+    #html += f"<pre>" + wisdom + "</pre>\n\n"
+    #if source:
+    #    html += f"<p>Source: " + source + "</p>\n\n"
+    #if categories:
+    #    html += f"<p>Categories:</p>\n"
+    #for c in categories:
+    #    html += f"<p>" + c + "</p>\n"
+    #for u in imageUrls:
+    #    html += f"<img src=\"" + u + "\">\n"
     #return html.format(format)
+        
     return jsonify({"wisdom": wisdom, "source": source, "categories": json.dumps(categories), "img-urls": json.dumps(imageUrls)})
 
 if __name__ == "__main__":
