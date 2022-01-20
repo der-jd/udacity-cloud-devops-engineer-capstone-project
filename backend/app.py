@@ -16,13 +16,13 @@ app = Flask(__name__)
 LOG = create_logger(app)
 LOG.setLevel(logging.INFO)
 
-@app.route("/")
+@app.route("/api")
 def home():
-    html = f"<h1>Backend for GetWise</h1>\n\n"
-    html += f"<p>Visit <a href=\"./wisdom\">/wisdom</a> to get a JSON response.</p>\n"
+    html = f"<h1>API (backend) for GetWise</h1>\n\n"
+    html += f"<p>Visit <a href=\"./api/wisdom\">/api/wisdom</a> to get a random wisdom as JSON response.</p>\n"
     return html.format(format)
 
-@app.route("/wisdom")
+@app.route("/api/wisdom")
 def wisdom():
     # Open a cursor to perform database operations
     cursor = connection.cursor()

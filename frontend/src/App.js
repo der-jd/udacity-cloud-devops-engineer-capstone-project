@@ -45,19 +45,19 @@ class App extends React.Component {
   }
 
   // componentDidMount() is invoked immediately after a component is mounted --> use to fetch the backend api
-  // https://reactjs.org/docs/react-component.html#componentdidmount
   // https://www.geeksforgeeks.org/how-to-fetch-data-from-an-api-in-reactjs/
+  // https://reactjs.org/docs/react-component.html#componentdidmount
   componentDidMount() {
-    fetch("./wisdom")
-      .then((res) => res.json()) // TODO FIX ERROR: Response is interpreted as HTMl so error message with leading '<' ?!
-      .then((jsonData) => {
+    fetch("./api/wisdom")
+      .then(res => res.json()) // TODO FIX ERROR: Response is interpreted as HTMl so error message with leading '<' ?!
+      .then(jsonData => {
         this.setState({
           items: jsonData,
           DataIsLoaded: true
         });
         console.log(jsonData);
       })
-      .catch((error) => {
+      .catch(error => {
         console.error("Error when fetching backend api:\n" + error);
       })
   }
