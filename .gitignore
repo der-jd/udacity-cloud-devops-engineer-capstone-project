@@ -1,6 +1,6 @@
 ########### Ignores from create-react-app ###########
 # dependencies
-/node_modules
+node_modules/
 /.pnp
 .pnp.js
 
