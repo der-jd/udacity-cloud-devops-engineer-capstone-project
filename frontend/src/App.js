@@ -47,9 +47,10 @@ class App extends React.Component {
   // componentDidMount() is invoked immediately after a component is mounted --> use to fetch the backend api
   // https://www.geeksforgeeks.org/how-to-fetch-data-from-an-api-in-reactjs/
   // https://reactjs.org/docs/react-component.html#componentdidmount
+  // TODO: add .env.production with host url of K8s Cluster
   componentDidMount() {
     fetch("./api/wisdom")
-      .then(res => res.json()) // TODO FIX ERROR: Response is interpreted as HTMl so error message with leading '<' ?!
+      .then(res => res.json())
       .then(jsonData => {
         this.setState({
           items: jsonData,
