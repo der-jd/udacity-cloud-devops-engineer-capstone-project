@@ -66,10 +66,10 @@ def wisdom():
     #for c in categories:
     #    html += f"<p>" + c + "</p>\n"
     #for u in imageUrls:
-    #    html += f"<img src=\"" + u + "\">\n"
+    #    html += f"<img src=\"" + u + "\" alt=\"Descriptive img\" />\n"
     #return html.format(format)
-        
-    return jsonify({"wisdom": wisdom, "source": source, "categories": json.dumps(categories), "img-urls": json.dumps(imageUrls)})
+
+    return jsonify({"wisdom": wisdom, "source": source, "categories": categories, "image-urls": imageUrls})
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=80, debug=True)
