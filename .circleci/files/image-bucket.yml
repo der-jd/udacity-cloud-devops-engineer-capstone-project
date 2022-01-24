@@ -1,0 +1,28 @@
+Description: >
+  S3 Image Storage, Udacity Cloud DevOps Engineer - Capstone Project
+
+Parameters:
+  ID:
+    Description: Unique identifier.
+    Type: String
+
+Resources:
+  ImageBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "images-${ID}"
+      AccessControl: PublicRead
+
+  ImageBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref 'ImageBucket'
+      PolicyDocument:
+        Statement:
+        - Sid: PublicRead
+          Effect: Allow
+          Principal: '*'
+          Action:
+          - s3:GetObject
+          - s3:GetObjectVersion
+          Resource: !Join ['', ['arn:aws:s3:::', !Ref 'ImageBucket', /*]]
