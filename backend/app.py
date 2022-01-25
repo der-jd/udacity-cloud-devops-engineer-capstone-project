@@ -16,10 +16,12 @@ app = Flask(__name__)
 LOG = create_logger(app)
 LOG.setLevel(logging.INFO)
 
+@app.route("/")
 @app.route("/api")
+@app.route("/api/")
 def home():
     html = f"<h1>API (backend) for GetWise</h1>\n\n"
-    html += f"<p>Visit <a href=\"./api/wisdom\">/api/wisdom</a> to get a random wisdom as JSON response.</p>\n"
+    html += f"<p>Visit <a href=\"/api/wisdom\">/api/wisdom</a> to get a random wisdom as JSON response.</p>\n"
     return html.format(format)
 
 @app.route("/api/wisdom")
