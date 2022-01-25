@@ -32,8 +32,9 @@ class App extends React.Component {
       return <div><h1>Pleses wait until data from backend is fetched...</h1></div>;
 
     console.log("type wisdom: " + typeof this.state.wisdom)
+    console.log("type source: " + typeof this.state.source)
     console.log("type categories: " + typeof this.state.categories)
-    console.log("type items: " + typeof this.state.items)
+    console.log("type imageUrls: " + typeof this.state.imageUrls)
 
     // TODO: Format and output JSON response correctly
     //<img src={this.state.imageUrls[0]} alt="Descriptive img" />
