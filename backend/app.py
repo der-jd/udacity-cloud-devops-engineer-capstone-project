@@ -1,6 +1,5 @@
 from flask import Flask, jsonify
 from flask.logging import create_logger
-import json
 import logging
 import os
 import psycopg2
@@ -34,9 +33,9 @@ def wisdom():
     # Retrieve query results
     records = cursor.fetchall()
     id_ = records[0][0]
-    wisdom = records[0][1]
+    wisdom_ = records[0][1]
     source = records[0][2]
-    LOG.info(f"Wisdom: \n{wisdom}")
+    LOG.info(f"Wisdom: \n{wisdom_}")
     LOG.info(f"Source: \n{source}")
 
     # Query for wisdom categories
@@ -60,7 +59,7 @@ def wisdom():
 
     ## Activate if backend should directly display results in html
     #html = f"<h1>GetWise</h1>\n\n"
-    #html += f"<pre>" + wisdom + "</pre>\n\n"
+    #html += f"<pre>" + wisdom_ + "</pre>\n\n"
     #if source:
     #    html += f"<p>Source: " + source + "</p>\n\n"
     #if categories:
@@ -71,7 +70,7 @@ def wisdom():
     #    html += f"<img src=\"" + u + "\" alt=\"Descriptive img\" />\n"
     #return html.format(format)
 
-    return jsonify({"wisdom": wisdom, "source": source, "categories": categories, "image-urls": imageUrls})
+    return jsonify({"wisdom": wisdom_, "source": source, "categories": categories, "image-urls": imageUrls})
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=80, debug=True)
