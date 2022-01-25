@@ -30,16 +30,13 @@ class App extends React.Component {
     // https://reactjs.org/docs/introducing-jsx.html
     return (
       <div className="App">
-        <h1>GetWise</h1>
-        <pre>{this.state.wisdom}</pre>
-        <p>Source: {this.state.source}</p>
-        <p>Categories: {this.state.categories.join(', ')}</p>
-        {image}
         <header className="App-header">
+          <h1>GetWise</h1>
+          <pre>{this.state.wisdom}</pre>
+          <p>Source: {this.state.source}</p>
+          <p>Categories: {this.state.categories.join(', ')}</p>
+          {image}
           <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
           <a
             className="App-link"
             href="https://reactjs.org"
