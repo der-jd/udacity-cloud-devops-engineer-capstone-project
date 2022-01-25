@@ -54,6 +54,7 @@ Resources:
       MultiAZ: false
       AllocatedStorage: 20
       StorageType: gp2
+      StorageEncrypted: true
       DBInstanceClass: db.t3.micro
       # Use default VPC and Subnet for DB
       VPCSecurityGroups:
