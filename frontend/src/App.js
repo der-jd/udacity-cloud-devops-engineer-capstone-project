@@ -20,16 +20,9 @@ class App extends React.Component {
     if (!this.state.dataIsLoaded)
       return <div><h1>Pleses wait until data from backend is fetched...</h1></div>;
 
-    console.log("type wisdom: " + typeof this.state.wisdom)
-    console.log("type source: " + typeof this.state.source)
-    console.log("type categories: " + typeof this.state.categories)
-    console.log("type imageUrls: " + typeof this.state.imageUrls)
-
     let image = <div></div>; // empty html tag if no images exist
-    for (let url of this.state.imageUrls) {
-      console.log("image url: " + url);
+    for (let url of this.state.imageUrls)
       image = <img src={url} alt="Descriptive img" />;
-    }
 
     // TODO: Format and output JSON response correctly
     // Return-statement uses JSX (JavaScript Syntax Extension)
@@ -41,7 +34,6 @@ class App extends React.Component {
         <pre>{this.state.wisdom}</pre>
         <p>Source: {this.state.source}</p>
         <p>Categories: {this.state.categories.join(', ')}</p>
-        <div id="img"/>
         {image}
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
