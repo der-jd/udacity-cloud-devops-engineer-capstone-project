@@ -44,7 +44,9 @@ The website is accessible via a AWS Cloudfront distribution.
 * Clicking the 'refresh' button or reloading the website will show a new random wisdom / knowledge.
 
 ## Running Backend
-1. Standalone:  `sudo ~/.udacity/bin/python backend/app.py` (`sudo` is necessary because the app is running on port 80.)
+1. Standalone:
+    * `sudo ~/.udacity/bin/python backend/app.py` (when the app is running on port 80)
+    * `python backend/app.py` (otherwise)
 2. Run in Docker:  `./run_docker.sh`
 3. Run in Kubernetes:
     * Run `./run_docker.sh` if not already done to build the image
