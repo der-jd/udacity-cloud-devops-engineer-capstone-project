@@ -2,16 +2,6 @@ import logo from './logo.svg';
 import './App.css';
 import React from "react";
 
-function validImageUrl(url) {
-  if (url) {
-    let tag = document.createElement("img");
-    tag.src = url;
-    tag.alt = "Descriptive img";
-    //document.getElementById("img").appendChild(tag);
-    return tag;
-  }
-}
-
 class App extends React.Component {
 
   constructor(props) {
@@ -26,7 +16,6 @@ class App extends React.Component {
     };
   }
 
-  // https://www.geeksforgeeks.org/how-to-fetch-data-from-an-api-in-reactjs/
   render() {
     if (!this.state.dataIsLoaded)
       return <div><h1>Pleses wait until data from backend is fetched...</h1></div>;
@@ -36,9 +25,16 @@ class App extends React.Component {
     console.log("type categories: " + typeof this.state.categories)
     console.log("type imageUrls: " + typeof this.state.imageUrls)
 
+    let image = <div></div>; // empty html tag if no images exist
+    for (let url of this.state.imageUrls) {
+      console.log("image url: " + url);
+      image = <img src={url} alt="Descriptive img" />;
+    }
+
     // TODO: Format and output JSON response correctly
-    //<img src={this.state.imageUrls[0]} alt="Descriptive img" />
-    //displayImage(this.state.imageUrls[0])</script>
+    // Return-statement uses JSX (JavaScript Syntax Extension)
+    // Only JavaScript expressions (but no statements) can be used inside JSX with curly braces {}
+    // https://reactjs.org/docs/introducing-jsx.html
     return (
       <div className="App">
         <h1>GetWise</h1>
@@ -46,8 +42,7 @@ class App extends React.Component {
         <p>Source: {this.state.source}</p>
         <p>Categories: {this.state.categories.join(', ')}</p>
         <div id="img"/>
-        <script>{document.getElementById("img").appendChild(validImageUrl(this.state.imageUrls[0]))}
-        </script>
+        {image}
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
           <p>
