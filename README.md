@@ -43,8 +43,8 @@ The website is accessible via a AWS Cloudfront distribution.
 * Open 'localhost' to access the Web-UI showing a random wisdom from the database.
 * Clicking the 'refresh' button or reloading the website will show a new random wisdom / knowledge.
 
-## Running `app.py`
-1. Standalone:  `sudo ~/.udacity/bin/python app.py` (`sudo` is necessary because the app is running on port 80.)
+## Running Backend
+1. Standalone:  `sudo ~/.udacity/bin/python backend/app.py` (`sudo` is necessary because the app is running on port 80.)
 2. Run in Docker:  `./run_docker.sh`
 3. Run in Kubernetes:
     * Run `./run_docker.sh` if not already done to build the image
@@ -53,6 +53,9 @@ The website is accessible via a AWS Cloudfront distribution.
     * Run `./run_kubernetes.sh`
     * Delete pods after use via `./delete_kubernetes.sh`
     * Delete minikube cluster via `minikube delete`
+
+## Running Frontend
+* Check the corresponding [README](./frontend/README.md).
 
 ## Kubernetes Steps
 * Setup and Configure Docker locally
