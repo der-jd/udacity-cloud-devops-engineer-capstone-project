@@ -1,6 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import React from "react";
+import styled, { css } from 'styled-components';
 
 class App extends React.Component {
 
@@ -16,15 +17,28 @@ class App extends React.Component {
     };
   }
 
+  reload() {
+    window.location.reload();
+  }
+
   render() {
     if (!this.state.dataIsLoaded)
       return <div><h1>Pleses wait until data from backend is fetched...</h1></div>;
+
+    const Button = styled.button`
+      background-color: black;
+      color: white;
+      font-size: 20px;
+      padding: 10px 60px;
+      border-radius: 5px;
+      margin: 10px 0px;
+      cursor: pointer;
+    `;
 
     let image = <div></div>; // empty html tag if no images exist
     for (let url of this.state.imageUrls)
       image = <img src={url} alt="Descriptive img" />;
 
-    // TODO: Format and output JSON response correctly
     // Return-statement uses JSX (JavaScript Syntax Extension)
     // Only JavaScript expressions (but no statements) can be used inside JSX with curly braces {}
     // https://reactjs.org/docs/introducing-jsx.html
@@ -32,6 +46,7 @@ class App extends React.Component {
       <div className="App">
         <header className="App-header">
           <h1>GetWise</h1>
+          <Button onClick={this.reload}>Reload</Button>
           <pre>{this.state.wisdom}</pre>
           <p>Source: {this.state.source}</p>
           <p>Categories: {this.state.categories.join(', ')}</p>
