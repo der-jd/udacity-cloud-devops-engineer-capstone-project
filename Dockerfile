@@ -11,8 +11,8 @@ COPY . /app/
 RUN pip install --no-cache-dir --upgrade pip &&\
     pip install --no-cache-dir -r backend/requirements.txt
 
-# Expose port 80
-EXPOSE 80
+# Expose port 8000
+EXPOSE 8000
 
 # Run app.py at container launch
 CMD ["python3", "backend/app.py"]
