@@ -6,8 +6,13 @@
 # This is your Docker ID/path
 dockerpath=judt/udacity-cloud-devops-engineer-capstone-project
 
-# Run the Docker Hub container with kubernetes
-kubectl run udacity-app --image=$dockerpath --port=8000
+# Create and run the container from the Docker Hub image with kubernetes
+kubectl run udacity-app --image=$dockerpath --port=8000 \
+    --env="DATABASE_USERNAME=$DATABASE_USERNAME" \
+    --env="DATABASE_PASSWORD=$DATABASE_PASSWORD" \
+    --env="DATABASE_NAME=$DATABASE_NAME" \
+    --env="DATABASE_HOST=$DATABASE_HOST" \
+    --env="DATABASE_PORT=$DATABASE_PORT"
 
 # Wait until the pod is running so that the port can be forwarded
 sleep 5s
