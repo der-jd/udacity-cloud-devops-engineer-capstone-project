@@ -26,7 +26,9 @@ The website is accessible via a AWS Cloudfront distribution.
 
 * Run `make setup`
 * Activate virtual environment with `source ~/.udacity/bin/activate` (deactivate with `deactivate`)
-* When using an AWS EC2 instance, resize storage volume: Run `resize.sh`
+* When using an AWS EC2 instance, consider resizing storage volume: Run `resize.sh`
+* Run `make install` to install the necessary dependencies
+* Run `sudo make install_hadolint` to install hadolint on Linux
 * Install `Docker` if necessary
 * Install `kubectl` on Linux (https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/)
     * curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
@@ -34,9 +36,6 @@ The website is accessible via a AWS Cloudfront distribution.
 * Install `minikube` on Linux
     * curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
     * sudo install minikube-linux-amd64 /usr/local/bin/minikube
-* Run `make install` to install the necessary dependencies
-* Run `sudo make install_hadolint` to install hadolint on Linux
-
 
 # Using the app
 
@@ -49,8 +48,8 @@ The website is accessible via a AWS Cloudfront distribution.
     * `python backend/app.py` (otherwise)
 2. Run in Docker:  `./run_docker.sh`
 3. Run in Kubernetes:
-    * Run `./run_docker.sh` if not already done to build the image
-    * Run `./upload_docker.sh` to upload the image to DockerHub
+    * Run `./run_docker.sh` if not already done to build the image (only necessary if image has changed or not been uploaded yet)
+    * Run `./upload_docker.sh` to upload the image to DockerHub (only necessary if image has changed or not been uploaded yet)
     * Start minikube cluster via `minikube start`
     * Run `./run_kubernetes.sh`
     * Delete pods after use via `./delete_kubernetes.sh`
