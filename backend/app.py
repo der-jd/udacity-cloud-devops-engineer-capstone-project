@@ -28,7 +28,6 @@ def home():
     return html.format(format)
 
 @app.route("/api/wisdom")
-@app.route("/api/wisdom/")
 def wisdom():
     # Open a cursor to perform database operations
     cursor = connection.cursor()
