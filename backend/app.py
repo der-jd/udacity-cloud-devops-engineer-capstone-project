@@ -3,6 +3,7 @@ from flask.logging import create_logger
 import logging
 import os
 import psycopg2
+from flask_cors import CORS, cross_origin
 
 # https://www.postgresqltutorial.com/postgresql-python/connect/
 connection = psycopg2.connect(dbname = os.environ["DATABASE_NAME"],
@@ -12,18 +13,22 @@ connection = psycopg2.connect(dbname = os.environ["DATABASE_NAME"],
                               port = os.environ["DATABASE_PORT"])
 
 app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 LOG = create_logger(app)
 LOG.setLevel(logging.INFO)
 
 @app.route("/")
 @app.route("/api")
 @app.route("/api/")
+@cross_origin()
 def home():
     html = f"<h1>API (backend) for GetWise</h1>\n\n"
     html += f"<p>Visit <a href=\"/api/wisdom\">/api/wisdom</a> to get a random wisdom as JSON response.</p>\n"
     return html.format(format)
 
 @app.route("/api/wisdom")
+@app.route("/api/wisdom/")
 def wisdom():
     # Open a cursor to perform database operations
     cursor = connection.cursor()
