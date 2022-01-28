@@ -1,7 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import React from "react";
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 class App extends React.Component {
 
@@ -35,7 +35,7 @@ class App extends React.Component {
       cursor: pointer;
     `;
 
-    let image = <div></div>; // empty html tag if no images exist
+    let image = <></>; // empty html tag if no images exist
     for (let url of this.state.imageUrls)
       image = <img src={url} alt="Descriptive img" />;
 
@@ -70,7 +70,10 @@ class App extends React.Component {
   // https://reactjs.org/docs/react-component.html#componentdidmount
   // TODO: add .env.production with host url of K8s Cluster
   componentDidMount() {
-    fetch("./api/wisdom")
+    let host = "";
+    if (process.env.NODE_ENV === "production")
+      host = process.env.REACT_APP_HOST;
+    fetch(host + "/api/wisdom")
       .then(res => res.json())
       .then(jsonData => {
         this.setState({
