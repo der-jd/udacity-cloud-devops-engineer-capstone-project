@@ -1,5 +1,5 @@
 Description: >
-  Cloudfront distribution for Udacity Cloud DevOps Engineer - Capstone Project.
+  Cloudfront distribution for website, Udacity Cloud DevOps Engineer - Capstone Project.
 
 Parameters:
   WorkflowID:
