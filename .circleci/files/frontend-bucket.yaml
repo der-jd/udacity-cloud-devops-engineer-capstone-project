@@ -2,7 +2,7 @@ Description: >
   S3 bucket for frontend website, Udacity Cloud DevOps Engineer - Capstone Project
 
 Parameters:
-  ID:
+  WorkflowID:
     Description: Unique identifier.
     Type: String
 
@@ -10,7 +10,7 @@ Resources:
   WebsiteBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub "website-${ID}"
+      BucketName: !Sub "website-${WorkflowID}"
       AccessControl: PublicRead
       WebsiteConfiguration:
         IndexDocument: index.html
