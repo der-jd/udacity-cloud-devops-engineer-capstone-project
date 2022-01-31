@@ -1,0 +1,22 @@
+[
+	{
+		"ParameterKey": "WorkflowID",
+		"ParameterValue": "1aa940fd-79db-4e9a-9954-ca60c5b021c8"
+	},
+	{
+		"ParameterKey": "MyVpcId",
+		"ParameterValue": "vpc-4bcca221"
+	},
+	{
+		"ParameterKey": "SubnetID1",
+		"ParameterValue": "subnet-a94617c3"
+	},
+	{
+		"ParameterKey": "SubnetID2",
+		"ParameterValue": "subnet-62961a1e"
+	},
+	{
+		"ParameterKey": "SubnetID3",
+		"ParameterValue": "subnet-0641d24a"
+	}
+]
