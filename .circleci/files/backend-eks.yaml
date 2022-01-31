@@ -61,6 +61,26 @@ Resources:
       - Key: Name
         Value: Udacity Capstone Project
 
+  EKSNodeGroup:
+    Type: AWS::EKS::Nodegroup
+    Properties:
+      NodegroupName: Capstone-Cluster-Nodegroup
+      ClusterName: !Ref EKSCluster
+      NodeRole: arn:aws:iam::880754027086:role/aws-service-role/eks-nodegroup.amazonaws.com/AWSServiceRoleForAmazonEKSNodegroup
+      AmiType: AL2_x86_64
+      InstanceTypes:
+      - t2.micro
+      ScalingConfig:
+        DesiredSize: 2
+        MinSize: 1
+        MaxSize: 3
+      Subnets:
+      - !Sub "${SubnetID1}"
+      - !Sub "${SubnetID2}"
+      - !Sub "${SubnetID3}"
+      Tags:
+        Name: Udacity Capstone Project
+
 Outputs:
   K8sAPIEndpoint:
     Value: !GetAtt EKSCluster.Endpoint
