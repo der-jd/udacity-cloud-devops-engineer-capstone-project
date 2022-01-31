@@ -15,6 +15,9 @@ Resources:
       WebsiteConfiguration:
         IndexDocument: index.html
         ErrorDocument: 404.html
+      Tags:
+      - Key: Name
+        Value: Udacity Capstone Project
 
   ImageBucketPolicy:
     Type: AWS::S3::BucketPolicy

@@ -42,6 +42,9 @@ Resources:
         FromPort: -1
         ToPort: -1
         CidrIp: 0.0.0.0/0
+      Tags:
+      - Key: Name
+        Value: Udacity Capstone Project
 
   MyDB:
     Type: "AWS::RDS::DBInstance"
@@ -60,4 +63,7 @@ Resources:
       - !Ref DBSecurityGroup
       MasterUsername: !Sub "${DBUsername}"
       MasterUserPassword: !Sub "${DBPassword}"
+      Tags:
+      - Key: Name
+        Value: Udacity Capstone Project
     DeletionPolicy: "Snapshot"

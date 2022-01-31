@@ -12,6 +12,9 @@ Resources:
     Properties:
       BucketName: !Sub "images-${WorkflowID}"
       AccessControl: PublicRead
+      Tags:
+      - Key: Name
+        Value: Udacity Capstone Project
 
   ImageBucketPolicy:
     Type: AWS::S3::BucketPolicy

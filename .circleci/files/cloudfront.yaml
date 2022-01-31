@@ -12,7 +12,7 @@ Resources:
     Type: "AWS::CloudFront::CloudFrontOriginAccessIdentity"
     Properties:
       CloudFrontOriginAccessIdentityConfig:
-        Comment: Origin Access Identity for Serverless Static Website
+        Comment: Origin Access Identity for Serverless Static Website of Udacity Capstone Project
 
   WebpageCDN:
     Type: AWS::CloudFront::Distribution
@@ -30,6 +30,9 @@ Resources:
             QueryString: False
           TargetOriginId: webpage
           ViewerProtocolPolicy: allow-all
+      Tags:
+      - Key: Name
+        Value: Udacity Capstone Project
 
 Outputs:
   DistributionDomain:
