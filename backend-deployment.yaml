@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backend
+  name: capstone-deployment
 spec:
   selector:
     matchLabels:
@@ -18,9 +18,12 @@ spec:
         track: stable
     spec:
       containers:
-        - name: capstone-project
-          image: "judt/udacity-cloud-devops-engineer-capstone-project"
-          ports:
-            - name: http
-              containerPort: 8000
+      - name: capstone-project
+        image: "judt/udacity-cloud-devops-engineer-capstone-project"
+        envFrom:
+        - secretRef:
+            name: database-access
+        ports:
+          - name: http
+            containerPort: 8000
 ...
