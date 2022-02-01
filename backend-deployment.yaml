@@ -1,0 +1,26 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+spec:
+  selector:
+    matchLabels:
+      app: capstone-project
+      tier: backend
+      track: stable
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: capstone-project
+        tier: backend
+        track: stable
+    spec:
+      containers:
+        - name: capstone-project
+          image: "judt/udacity-cloud-devops-engineer-capstone-project"
+          ports:
+            - name: http
+              containerPort: 8000
+...
