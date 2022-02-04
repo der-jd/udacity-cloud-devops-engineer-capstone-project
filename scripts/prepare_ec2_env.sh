@@ -1,5 +1,7 @@
 # Run AFTER activating virtual environment
 
+cd ..
+
 # Resize ec2 storage
 ./resize.sh
 

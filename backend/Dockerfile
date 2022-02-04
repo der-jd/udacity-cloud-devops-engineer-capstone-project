@@ -4,7 +4,7 @@ FROM python:3.7.3-stretch
 WORKDIR /app
 
 # Copy source code to working directory
-COPY ./backend /app/
+COPY ./src /app/
 
 # Install packages from requirements.txt
 # hadolint ignore=DL3013
