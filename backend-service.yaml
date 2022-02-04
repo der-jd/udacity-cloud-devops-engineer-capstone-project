@@ -4,6 +4,7 @@ kind: Service
 metadata:
   name: capstone-service
 spec:
+  type: LoadBalancer
   selector:
     app: capstone-project
     tier: backend
@@ -11,5 +12,4 @@ spec:
   - protocol: TCP
     port: 8000 # port of this service
     targetPort: 8000 # port on which the application is running inside the container (target port on the pod)
-    nodePort: 30001 # port exposed on the host node. Here comes external traffic in.
 ...
