@@ -6,7 +6,7 @@ metadata:
 spec:
   type: LoadBalancer
   selector:
-    app: capstone-project
+    app: capstone-project-1aa940fd-79db-4e9a-9954-ca60c5b021c8
     tier: backend
   ports:
   - protocol: TCP

@@ -2,18 +2,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: capstone-deployment
+  name: capstone-deployment-1aa940fd-79db-4e9a-9954-ca60c5b021c8
 spec:
   selector:
     matchLabels:
-      app: capstone-project
+      app: capstone-project-1aa940fd-79db-4e9a-9954-ca60c5b021c8
       tier: backend
       track: stable
   replicas: 2
   template:
     metadata:
       labels:
-        app: capstone-project
+        app: capstone-project-1aa940fd-79db-4e9a-9954-ca60c5b021c8
         tier: backend
         track: stable
     spec:
