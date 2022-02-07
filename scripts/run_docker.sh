@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Build image and add a descriptive tag
-docker build --tag udacity-project .
+docker build --tag udacity-project ../backend
 
 # List docker images
 docker image ls
