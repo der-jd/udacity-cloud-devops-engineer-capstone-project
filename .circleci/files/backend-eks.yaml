@@ -71,9 +71,9 @@ Resources:
       InstanceTypes:
       - t2.micro
       ScalingConfig:
-        DesiredSize: 2
-        MinSize: 1
-        MaxSize: 3
+        DesiredSize: 4
+        MinSize: 4
+        MaxSize: 6
       Subnets:
       - !Sub "${SubnetID1}"
       - !Sub "${SubnetID2}"
