@@ -65,36 +65,38 @@ The website is accessible via a AWS Cloudfront distribution.
 
 ## Running Backend
 1. Standalone locally:
-    * Run `sudo ~/.udacity/bin/python backend/src/app.py` (when the app is running on port 80)
-    * Run `python backend/src/app.py` (otherwise)
-    * Access API via `curl http://hostname:8000` or via web browser
+    * Run `sudo ~/.udacity/bin/python backend/src/app.py` (when the app is running on port 80).
+    * Run `python backend/src/app.py` (otherwise).
+    * Access API via `curl http://hostname:8000` or via web browser.
 2. Run in Docker locally:
-    * Run `./scripts/run_docker.sh`
-    * Access API via `curl http://hostname` or via web browser
+    * Run `./scripts/run_docker.sh`.
+    * Access API via `curl http://hostname` or via web browser.
 3. Run in Kubernetes (minikube) locally:
-    * Run `./scripts/run_docker.sh` if not already done to build the image (only necessary if image has changed or not been uploaded yet)
-    * Run `./scripts/upload_docker.sh` to upload the image to DockerHub (only necessary if image has changed or not been uploaded yet)
-    * Run `./scripts/run_kubernetes_minikube.sh`
-    * Get service endpoint (`http://host-ip:port`) via `minikube service $(minikube service list | grep -o -E ".[^ ]*capstone.[^ ]*") --url=true`
-    * Access API via `curl http://host-ip:port` or via web browser
-    * Delete K8s resources after use via `./scripts/delete_kubernetes.sh`
-    * Delete minikube cluster via `minikube delete`
+    * Run `./scripts/run_docker.sh` if not already done to build the image (only necessary if image has changed or not been uploaded yet).
+    * Run `./scripts/upload_docker.sh` to upload the image to DockerHub (only necessary if image has changed or not been uploaded yet).
+    * Run `./scripts/run_kubernetes_minikube.sh`.
+    * Get service endpoint (`http://host-ip:port`) via `minikube service $(minikube service list | grep -o -E ".[^ ]*capstone.[^ ]*") --url=true`.
+    * Access API via `curl http://host-ip:port` or via web browser.
+    * Delete K8s resources after use via `./scripts/delete_kubernetes.sh`.
+    * Delete minikube cluster via `minikube delete`.
 4. Run in Kubernetes (EKS):
-    * Run `./scripts/run_docker.sh` if not already done to build the image (only necessary if image has changed or not been uploaded yet)
-    * Run `./scripts/upload_docker.sh` to upload the image to DockerHub (only necessary if image has changed or not been uploaded yet)
-    * Run `./scripts/run_kubernetes_eks.sh`
-    * Get hostname of the AWS load balancer via `kubectl get $(kubectl get svc -o name | grep -o -E ".*capstone.*") --output jsonpath='{.status.loadBalancer.ingress[0].hostname}'`
-    * Access API via `curl http://hostname:8000` or via web browser
-    * Delete K8s resources after use via `./scripts/delete_kubernetes.sh`
+    * Run `./scripts/run_docker.sh` if not already done to build the image (only necessary if image has changed or not been uploaded yet).
+    * Run `./scripts/upload_docker.sh` to upload the image to DockerHub (only necessary if image has changed or not been uploaded yet).
+    * Run `./scripts/run_kubernetes_eks.sh`.
+    * Get hostname of the AWS load balancer via `kubectl get $(kubectl get svc -o name | grep -o -E ".*capstone.*") --output jsonpath='{.status.loadBalancer.ingress[0].hostname}'`.
+    * Access API via `curl http://hostname:8000` or via web browser.
+    * Delete K8s resources after use via `./scripts/delete_kubernetes.sh`.
 
 ## Running Frontend
 1. Standalone locally (development environment):
-    * See the corresponding [README](./frontend/README.md)
-    * Access API via `curl http://hostname:8080` or via web browser
+    * See the corresponding [README](./frontend/README.md).
+    * Access frontend via `curl http://hostname:8080` or via web browser.
 2. Via S3 bucket (production environment):
-    * Set the hostname of the backend API endpoint in `./frontend/.env.production` (see section `Running Backend` for possible endpoints, e.g. `http://hostname-aws-loadBalancer:8000`)
-    * Build the frontend for production (see the corresponding [README](./frontend/README.md))
+    * Set the hostname of the backend API endpoint in `./frontend/.env.production` (see section `Running Backend` for possible endpoints, e.g. `http://hostname-aws-loadBalancer:8000`).
+    * Build the frontend for production (see the corresponding [README](./frontend/README.md)).
     * After creating the `./frontend/build` folder, upload its content to the S3 bucket for the static website.
+    * Get hostname directly from the S3 bucket website endpoint or from the CloudFront domain name.
+    * Access frontend via `curl http://hostname` or via web browser.
 
 # Files // TODO update
 
