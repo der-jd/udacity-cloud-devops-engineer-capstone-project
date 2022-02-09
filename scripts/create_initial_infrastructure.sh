@@ -53,7 +53,4 @@ aws cloudformation create-stack \
 	--stack-name capstone-images-$uuid \
 	--template-body file://image-bucket.yaml \
 	--parameters file://image-bucket-params.json
-echo "Wait for finished creation of stack..."
-aws cloudformation wait stack-create-complete --stack-name capstone-images-$uuid
 echo "IMPORTANT: Images have to be uploaded manually to S3 bucket!"
-#aws s3 cp ..\..\..\images s3://images-$uuid --recursive
