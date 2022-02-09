@@ -24,23 +24,24 @@ The website is accessible via a AWS Cloudfront distribution.
 
 # Setup the Environment
 
-* Run `make setup`
-* Activate virtual environment with `source ~/.udacity/bin/activate` (deactivate with `deactivate`)
+* Run `make setup`.
+* Activate virtual environment with `source ~/.udacity/bin/activate` (deactivate with `deactivate`).
 * When working on an AWS EC2 instance:
-    * Consider resizing storage volume: Run `./scripts/resize.sh`
+    * If the application should run locally, open the ports `80` and `8000` (for backend) and port `8080` (for frontend) in the corresponding security group.
+    * Consider resizing storage volume: Run `./scripts/resize.sh`.
     * Or run `./scripts/prepare_ec2_env.sh`.
       This resizes the volume and installs all necessary dependencies.
       The following steps can be skipped then, **except** the setting of the necessary environment variables for the database access (see below).
-* Run `make install` to install the necessary dependencies
-* Run `sudo make install_hadolint` to install hadolint on Linux
-* Install `Docker` if necessary
-* Install `aws-cli` if necessary
-* Install `kubectl` on Linux (https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/)
-    * curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-    * sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-* Install `minikube` on Linux
-    * curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
-    * sudo install minikube-linux-amd64 /usr/local/bin/minikube
+* Run `make install` to install the necessary dependencies.
+* Run `sudo make install_hadolint` to install hadolint on Linux.
+* Install `Docker` if necessary.
+* Install `aws-cli` if necessary.
+* Install `kubectl` on Linux (https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/).
+    * `curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"`
+    * `sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl`
+* Install `minikube` on Linux.
+    * `curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64`
+    * `sudo install minikube-linux-amd64 /usr/local/bin/minikube`
 * Set the necessary environment variables for the database access. This step is **always** necessary and must be done even if running `./scripts/prepare_ec2_env.sh`.
     ```
     echo DATABASE_USERNAME="xxx" | sudo tee -a /etc/environment
@@ -53,6 +54,14 @@ The website is accessible via a AWS Cloudfront distribution.
 # Using the app
 
 * Clicking the `Reload` button or reloading the website will show a new random wisdom / knowledge.
+
+## Creating the AWS infrastructure
+* Run `./scripts/create_initial_infrastructure.sh`.
+    * If no database snapshot is available, update script to create a new database. See section `Create Database` for more information.
+    * Manually upload any images to the S3 bucket for image storage.
+* Delete the infrastructure with `./scripts/delete_initial_infrastructure.sh`.
+
+## Create Database // TODO
 
 ## Running Backend
 1. Standalone locally:
@@ -74,13 +83,18 @@ The website is accessible via a AWS Cloudfront distribution.
     * Run `./scripts/run_docker.sh` if not already done to build the image (only necessary if image has changed or not been uploaded yet)
     * Run `./scripts/upload_docker.sh` to upload the image to DockerHub (only necessary if image has changed or not been uploaded yet)
     * Run `./scripts/run_kubernetes_eks.sh`
-    * Get hostname of load balancer via `kubectl get $(kubectl get svc -o name | grep -o -E ".*capstone.*") --output jsonpath='{.status.loadBalancer.ingress[0].hostname}'`
+    * Get hostname of the AWS load balancer via `kubectl get $(kubectl get svc -o name | grep -o -E ".*capstone.*") --output jsonpath='{.status.loadBalancer.ingress[0].hostname}'`
     * Access API via `curl http://hostname:8000` or via web browser
     * Delete K8s resources after use via `./scripts/delete_kubernetes.sh`
 
 ## Running Frontend
-* Check the corresponding [README](./frontend/README.md).
-
+1. Standalone locally (development environment):
+    * See the corresponding [README](./frontend/README.md)
+    * Access API via `curl http://hostname:8080` or via web browser
+2. Via S3 bucket (production environment):
+    * Set the hostname of the backend API endpoint in `./frontend/.env.production` (see section `Running Backend` for possible endpoints, e.g. `http://hostname-aws-loadBalancer:8000`)
+    * Build the frontend for production (see the corresponding [README](./frontend/README.md))
+    * After creating the `./frontend/build` folder, upload its content to the S3 bucket for the static website.
 
 # Files // TODO update
 
