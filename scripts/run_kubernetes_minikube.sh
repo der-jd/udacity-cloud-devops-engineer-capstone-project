@@ -10,7 +10,9 @@ if minikube status | grep "host: Stopped"; then
     minikube start
 fi
 
-# TODO: config kubectl to access minikube
+# Update kubectl to point to minikube cluster
+rm ~/.kube/config
+minikube update-context
 
 kubectl create secret generic database-access --from-env-file=/etc/environment
 
