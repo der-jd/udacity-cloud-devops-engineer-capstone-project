@@ -15,6 +15,8 @@ aws s3 rm "s3://images-$uuid" --recursive
 echo "Delete S3 bucket for images..."
 aws cloudformation delete-stack --stack-name capstone-images-$uuid
 
+echo "Delete CloudFront stack..."
 aws cloudformation delete-stack --stack-name capstone-cloudfront-$uuid
 
+echo "Delete EKS cluster..."
 aws cloudformation delete-stack --stack-name capstone-eks-$uuid
