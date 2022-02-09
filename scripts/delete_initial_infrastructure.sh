@@ -2,6 +2,9 @@
 
 uuid=1aa940fd-79db-4e9a-9954-ca60c5b021c8
 
+scriptPath=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
+cd $scriptPath
+
 echo "Delete database stack..."
 aws cloudformation delete-stack --stack-name capstone-db-$uuid
 
@@ -17,6 +20,10 @@ aws cloudformation delete-stack --stack-name capstone-images-$uuid
 
 echo "Delete CloudFront stack..."
 aws cloudformation delete-stack --stack-name capstone-cloudfront-$uuid
+
+# TODO: Update kubectl to point to eks cluster
+# Delete potential resources in the EKS cluster. Otherwise some AWS resources are not deleted (e.g. an Elastic Load Balancer created by a LoadBalancer service).
+./delete_kubernetes_resources.sh
 
 echo "Delete EKS cluster..."
 aws cloudformation delete-stack --stack-name capstone-eks-$uuid
