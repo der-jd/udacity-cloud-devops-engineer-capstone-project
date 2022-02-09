@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+scriptPath=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
+cd $scriptPath
+
 # Build image and add a descriptive tag
 docker build --tag udacity-project ../backend
 

@@ -1,4 +1,9 @@
+#!/usr/bin/env bash
+
 # Run AFTER activating virtual environment
+
+scriptPath=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
+cd $scriptPath
 
 # Resize ec2 storage
 ./resize.sh

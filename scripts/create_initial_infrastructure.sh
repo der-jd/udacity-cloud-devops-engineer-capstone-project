@@ -1,7 +1,12 @@
+#!/usr/bin/env bash
+
 source /etc/environment
 
 uuid=1aa940fd-79db-4e9a-9954-ca60c5b021c8
 defaultVPC=vpc-4bcca221 # for region eu-central-1
+
+scriptPath=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
+cd $scriptPath
 
 echo "Restore database from snapshot (without DBName)..."
 aws cloudformation create-stack \

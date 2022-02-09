@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 uuid=1aa940fd-79db-4e9a-9954-ca60c5b021c8
 
 echo "Delete database stack..."
