@@ -10,6 +10,8 @@ if minikube status | grep "host: Stopped"; then
     minikube start
 fi
 
+# TODO: config kubectl to access minikube
+
 kubectl create secret generic database-access --from-env-file=/etc/environment
 
 kubectl apply -f ../backend/backend-deployment.yaml
