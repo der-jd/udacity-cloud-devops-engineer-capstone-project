@@ -26,43 +26,60 @@ The website is accessible via a AWS Cloudfront distribution.
 
 * Run `make setup`
 * Activate virtual environment with `source ~/.udacity/bin/activate` (deactivate with `deactivate`)
-* When using an AWS EC2 instance, consider resizing storage volume: Run `resize.sh`
+* When working on an AWS EC2 instance:
+    * Consider resizing storage volume: Run `./scripts/resize.sh`
+    * Or run `./scripts/prepare_ec2_env.sh`.
+      This resizes the volume and installs all necessary dependencies.
+      The following steps can be skipped then, **except** the setting of the necessary environment variables for the database access (see below).
 * Run `make install` to install the necessary dependencies
 * Run `sudo make install_hadolint` to install hadolint on Linux
 * Install `Docker` if necessary
+* Install `aws-cli` if necessary
 * Install `kubectl` on Linux (https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/)
     * curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
     * sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 * Install `minikube` on Linux
     * curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
     * sudo install minikube-linux-amd64 /usr/local/bin/minikube
+* Set the necessary environment variables for the database access. This step is **always** necessary and must be done even if running `./scripts/prepare_ec2_env.sh`.
+    ```
+    echo DATABASE_USERNAME="xxx" | sudo tee -a /etc/environment
+    echo DATABASE_PASSWORD="xxx" | sudo tee -a /etc/environment
+    echo DATABASE_NAME="xxx" | sudo tee -a /etc/environment
+    echo DATABASE_HOST="xxx.xxx.xx-xxx-x.rds.amazonaws.com" | sudo tee -a /etc/environment
+    echo DATABASE_PORT="xxx" | sudo tee -a /etc/environment
+    ```
 
 # Using the app
 
-* Open 'localhost' to access the Web-UI showing a random wisdom from the database.
-* Clicking the 'refresh' button or reloading the website will show a new random wisdom / knowledge.
+* Clicking the `Reload` button or reloading the website will show a new random wisdom / knowledge.
 
 ## Running Backend
-1. Standalone:
-    * `sudo ~/.udacity/bin/python backend/app.py` (when the app is running on port 80)
-    * `python backend/app.py` (otherwise)
-2. Run in Docker:  `./run_docker.sh`
-3. Run in Kubernetes:
-    * Run `./run_docker.sh` if not already done to build the image (only necessary if image has changed or not been uploaded yet)
-    * Run `./upload_docker.sh` to upload the image to DockerHub (only necessary if image has changed or not been uploaded yet)
-    * Start minikube cluster via `minikube start`
-    * Run `./run_kubernetes.sh`
-    * Delete pods after use via `./delete_kubernetes.sh`
+1. Standalone locally:
+    * Run `sudo ~/.udacity/bin/python backend/src/app.py` (when the app is running on port 80)
+    * Run `python backend/src/app.py` (otherwise)
+    * Access API via `curl http://hostname:8000` or via web browser
+2. Run in Docker locally:
+    * Run `./scripts/run_docker.sh`
+    * Access API via `curl http://hostname` or via web browser
+3. Run in Kubernetes (minikube) locally:
+    * Run `./scripts/run_docker.sh` if not already done to build the image (only necessary if image has changed or not been uploaded yet)
+    * Run `./scripts/upload_docker.sh` to upload the image to DockerHub (only necessary if image has changed or not been uploaded yet)
+    * Run `./scripts/run_kubernetes_minikube.sh`
+    * Get service endpoint (`http://host-ip:port`) via `minikube service $(minikube service list | grep -o -E ".[^ ]*capstone.[^ ]*") --url=true`
+    * Access API via `curl http://host-ip:port` or via web browser
+    * Delete K8s resources after use via `./scripts/delete_kubernetes.sh`
     * Delete minikube cluster via `minikube delete`
+4. Run in Kubernetes (EKS):
+    * Run `./scripts/run_docker.sh` if not already done to build the image (only necessary if image has changed or not been uploaded yet)
+    * Run `./scripts/upload_docker.sh` to upload the image to DockerHub (only necessary if image has changed or not been uploaded yet)
+    * Run `./scripts/run_kubernetes_eks.sh`
+    * Get hostname of load balancer via `kubectl get $(kubectl get svc -o name | grep -o -E ".*capstone.*") --output jsonpath='{.status.loadBalancer.ingress[0].hostname}'`
+    * Access API via `curl http://hostname:8000` or via web browser
+    * Delete K8s resources after use via `./scripts/delete_kubernetes.sh`
 
 ## Running Frontend
 * Check the corresponding [README](./frontend/README.md).
-
-## Kubernetes Steps
-* Setup and Configure Docker locally
-* Setup and Configure Kubernetes locally
-* Create Flask app in Container
-* Run via kubectl
 
 
 # Files // TODO update
