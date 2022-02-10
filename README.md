@@ -29,6 +29,9 @@ The website is accessible via a AWS Cloudfront distribution.
 * When working on an AWS EC2 instance:
     * If the application should run locally, open the ports `80` and `8000` (for backend) and port `8080` (for frontend) in the corresponding security group.
     * Attach the necessary IAM role / policies to the instance to be able to create and manage the AWS infrastructure (CloudFormation scripts, etc.).
+        * Give the EC2 instance admin rights
+        * https://docs.aws.amazon.com/prescriptive-guidance/latest/patterns/deploy-an-amazon-eks-cluster-from-aws-cloud9-using-an-ec2-instance-profile.html
+        * https://docs.aws.amazon.com/eks/latest/userguide/getting-started-console.html
     * Consider resizing storage volume: Run `./scripts/resize.sh`.
     * Or run `./scripts/prepare_ec2_env.sh`.
       This resizes the volume and installs all necessary dependencies.
