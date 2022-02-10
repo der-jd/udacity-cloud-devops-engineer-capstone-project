@@ -28,6 +28,7 @@ The website is accessible via a AWS Cloudfront distribution.
 * Activate virtual environment with `source ~/.udacity/bin/activate` (deactivate with `deactivate`).
 * When working on an AWS EC2 instance:
     * If the application should run locally, open the ports `80` and `8000` (for backend) and port `8080` (for frontend) in the corresponding security group.
+    * Attach the necessary IAM role / policies to the instance to be able to create and manage the AWS infrastructure (CloudFormation scripts, etc.).
     * Consider resizing storage volume: Run `./scripts/resize.sh`.
     * Or run `./scripts/prepare_ec2_env.sh`.
       This resizes the volume and installs all necessary dependencies.
