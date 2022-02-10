@@ -97,36 +97,3 @@ The website is accessible via a AWS Cloudfront distribution.
     * After creating the `./frontend/build` folder, upload its content to the S3 bucket for the static website.
     * Get hostname directly from the S3 bucket website endpoint or from the CloudFront domain name.
     * Access frontend via `curl http://hostname` or via web browser.
-
-# Files // TODO update
-
-* .circleci/config.yml
-    * Config file for CI pipeline of circleci
-* model_data/
-    * Data for the housing price model
-* output_txt_files/
-    * Example for the log output of the running application via Docker and K8s after making an API call
-* .gitignore
-    * Well....ignore it ;-)
-* app.py
-    *  Python application for predicting housing prices in Boston
-* delete_kubernetes.sh
-    *  Delete created K8s pod
-* Dockerfile
-    *  Description of the image for the containerized application
-* make_prediction.sh
-    * Run to make an API call to the web application
-* Makefile
-    * Commands to setup the environment, install dependencies and lint files
-* README.md
-    * recursion...^^
-* requirements.txt
-    * Python package dependencies
-* resize.sh
-    * Resize the AWS EC2 storage volume to 20 GB
-* run_docker.sh
-    * Run the application via Docker container
-* run_kubernetes.sh
-    * Run the application via a K8s pod
-* upload_docker.sh
-    * Upload the Docker image to DockerHub repository
