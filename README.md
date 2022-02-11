@@ -71,8 +71,8 @@ The website is accessible via a AWS Cloudfront distribution.
 
 ## Running Backend
 1. Standalone locally:
-    * Run `sudo ~/.udacity/bin/python backend/src/app.py` (when the app is running on port 80).
-    * Run `python backend/src/app.py` (otherwise).
+    * Run `python backend/src/app.py`.    
+        * Run `sudo ~/.udacity/bin/python backend/src/app.py` instead when the app is running on port 80.
     * Access API via `curl http://hostname:8000` or via web browser.
 2. Run in Docker locally:
     * Run `./scripts/run_docker.sh`.
