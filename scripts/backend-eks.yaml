@@ -23,7 +23,7 @@ Resources:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Allow access to the K8s Cluster
-      GroupName: !Sub "eks-${WorkflowID}"
+      GroupName: !Sub "eks-sg-${WorkflowID}"
       VpcId: !Sub "${MyVpcId}"
       SecurityGroupIngress:
       - IpProtocol: tcp
