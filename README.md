@@ -71,6 +71,7 @@ The website is accessible via a AWS Cloudfront distribution.
 
 ## Running Backend
 1. Standalone locally:
+    * In this case the environment variables in `/etc/environment` have to be set also in currect shell via `export DATABASE_XXX=xxx`.
     * Run `python backend/src/app.py`.    
         * Run `sudo ~/.udacity/bin/python backend/src/app.py` instead when the app is running on port 80.
     * Access API via `curl http://hostname:8000` or via web browser.
