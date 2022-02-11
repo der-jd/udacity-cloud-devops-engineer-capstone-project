@@ -32,6 +32,7 @@ The website is accessible via a AWS Cloudfront distribution.
         * Give the EC2 instance admin rights
         * https://docs.aws.amazon.com/prescriptive-guidance/latest/patterns/deploy-an-amazon-eks-cluster-from-aws-cloud9-using-an-ec2-instance-profile.html
         * https://docs.aws.amazon.com/eks/latest/userguide/getting-started-console.html
+        * https://docs.aws.amazon.com/eks/latest/userguide/cluster-endpoint.html
     * Consider resizing storage volume: Run `./scripts/resize.sh`.
     * Or run `./scripts/prepare_ec2_env.sh`.
       This resizes the volume and installs all necessary dependencies.
