@@ -50,7 +50,7 @@ Resources:
       RoleArn: arn:aws:iam::880754027086:role/eksClusterRole
       ResourcesVpcConfig:
         EndpointPublicAccess: true
-        EndpointPrivateAccess: true
+        EndpointPrivateAccess: false
         SubnetIds:
         - !Sub "${SubnetID1}"
         - !Sub "${SubnetID2}"
