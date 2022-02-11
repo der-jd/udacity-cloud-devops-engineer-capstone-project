@@ -5,9 +5,6 @@ Parameters:
   WorkflowID:
     Description: Unique identifier.
     Type: String
-  MyVpcId:
-    Description: Id of the VPC to use for the security group.
-    Type: String
   SubnetID1:
     Description: Subnet identifier 1 for EKS nodes.
     Type: String
@@ -19,30 +16,6 @@ Parameters:
     Type: String
 
 Resources:
-  EKSSecurityGroup:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupDescription: Allow access to the K8s Cluster
-      GroupName: !Sub "eks-sg-${WorkflowID}"
-      VpcId: !Sub "${MyVpcId}"
-      SecurityGroupIngress:
-      - IpProtocol: tcp
-        FromPort: 22
-        ToPort: 22
-        CidrIp: 0.0.0.0/0
-      - IpProtocol: tcp
-        FromPort: 8000
-        ToPort: 8000
-        CidrIp: 0.0.0.0/0
-      SecurityGroupEgress:
-      - IpProtocol: -1
-        FromPort: -1
-        ToPort: -1
-        CidrIp: 0.0.0.0/0
-      Tags:
-      - Key: Name
-        Value: Udacity Capstone Project
-
   EKSCluster:
     Type: AWS::EKS::Cluster
     Properties:
@@ -55,8 +28,6 @@ Resources:
         - !Sub "${SubnetID1}"
         - !Sub "${SubnetID2}"
         - !Sub "${SubnetID3}"
-        SecurityGroupIds:
-        - !Ref EKSSecurityGroup
       Tags:
       - Key: Name
         Value: Udacity Capstone Project
@@ -64,7 +35,7 @@ Resources:
   EKSNodeGroup:
     Type: AWS::EKS::Nodegroup
     Properties:
-      NodegroupName: Capstone-Cluster-Nodegroup
+      NodegroupName: !Sub "cluster-nodegroup-${WorkflowID}"
       ClusterName: !Ref EKSCluster
       NodeRole: arn:aws:iam::880754027086:role/eksNodeRole
       AmiType: AL2_x86_64
