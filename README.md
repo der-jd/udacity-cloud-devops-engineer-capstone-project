@@ -51,7 +51,7 @@ The website is accessible via a AWS Cloudfront distribution.
     echo DATABASE_USERNAME="xxx" | sudo tee -a /etc/environment
     echo DATABASE_PASSWORD="xxx" | sudo tee -a /etc/environment
     echo DATABASE_NAME="xxx" | sudo tee -a /etc/environment
-    echo DATABASE_HOST="xxx.xxx.xx-xxx-x.rds.amazonaws.com" | sudo tee -a /etc/environment
+    echo DATABASE_HOST="xxx.xxx.eu-central-1.rds.amazonaws.com" | sudo tee -a /etc/environment
     echo DATABASE_PORT="xxx" | sudo tee -a /etc/environment
     ```
 
