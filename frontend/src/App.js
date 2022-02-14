@@ -23,7 +23,7 @@ class App extends React.Component {
 
   render() {
     if (!this.state.dataIsLoaded)
-      return <div><h1>Pleses wait until data from backend is fetched...</h1></div>;
+      return <div><h1>Please wait until data from backend is fetched...</h1></div>;
 
     const Button = styled.button`
       background-color: black;
