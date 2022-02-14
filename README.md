@@ -10,7 +10,7 @@ This project implies a backend, frontend and SQL database, all running within `A
 
 The necessary infrastructure gets created and updated via AWS Cloudformation scripts (IaC).
 
-Any changes are continuously built and deployed with the CI/CD environment `CircleCi`.
+Any changes are continuously built and deployed with the CI/CD environment `CircleCi` (https://circleci.com/).
 
 ## Backend
 The backend consists of a Python flask app connecting to the SQL database containing the wisdoms. The application itself runs within a Docker container which is deployed via Kubernetes.
@@ -107,5 +107,16 @@ The website is accessible via a AWS Cloudfront distribution.
     * Get hostname directly from the S3 bucket website endpoint or from the CloudFront domain name.
     * Access frontend via `curl http://hostname` or via web browser.
 
-## Enable CI/CD with CircleCi
-// TODO
+## Running CI/CD with CircleCi
+1. Set AWS credentials as environment variables in CircleCi.
+    * `AWS_ACCESS_KEY_ID`
+    * `AWS_SECRET_ACCESS_KEY`
+    * `AWS_DEFAULT_REGION`
+2. Set name of EKS cluster as environment variable in CircleCi.
+    * `CLUSTER_NAME`
+3. Set the access data for the database as environment variables in CircleCi.
+    * `DATABASE_USERNAME`
+    * `DATABASE_PASSWORD`
+    * `DATABASE_NAME`
+    * `DATABASE_HOST`
+    * `DATABASE_PORT`
