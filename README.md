@@ -75,6 +75,8 @@ The website is accessible via a AWS Cloudfront distribution.
     * Run `python backend/src/app.py`.    
         * Run `sudo ~/.udacity/bin/python backend/src/app.py` instead when the app is running on port 80.
     * Access API via `curl http://hostname:8000` or via web browser.
+    * In this case the frontend cann't connect to the backend by default because the app is running on port 8000 but frontend expects the API on port 80.
+      Alternatively the frontend must run in production environment because in that case the expected port for the backend API can be defined in `.env.production`.
 2. Run in Docker locally:
     * Run `./scripts/run_docker.sh`.
     * Access API via `curl http://hostname` or via web browser.
