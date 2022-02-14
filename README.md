@@ -50,11 +50,11 @@ The website is accessible via a AWS Cloudfront distribution.
     * `sudo install minikube-linux-amd64 /usr/local/bin/minikube`
 * Set the necessary environment variables for the database access. This step is **always** necessary and must be done even if running `./scripts/prepare_ec2_env.sh`.
     ```
-    echo DATABASE_USERNAME="xxx" | sudo tee -a /etc/environment
-    echo DATABASE_PASSWORD="xxx" | sudo tee -a /etc/environment
-    echo DATABASE_NAME="xxx" | sudo tee -a /etc/environment
-    echo DATABASE_HOST="xxx.xxx.eu-central-1.rds.amazonaws.com" | sudo tee -a /etc/environment
-    echo DATABASE_PORT="xxx" | sudo tee -a /etc/environment
+    echo DATABASE_USERNAME="xxx" | sudo tee -a /etc/environment > /dev/null
+    echo DATABASE_PASSWORD="xxx" | sudo tee -a /etc/environment > /dev/null
+    echo DATABASE_NAME="xxx" | sudo tee -a /etc/environment > /dev/null
+    echo DATABASE_HOST="xxx.xxx.eu-central-1.rds.amazonaws.com" | sudo tee -a /etc/environment > /dev/null
+    echo DATABASE_PORT="xxx" | sudo tee -a /etc/environment > /dev/null
     ```
 
 # Using the app
