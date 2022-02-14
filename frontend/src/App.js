@@ -22,9 +22,6 @@ class App extends React.Component {
   }
 
   render() {
-    if (!this.state.dataIsLoaded)
-      return <div><h1>Please wait until data from backend is fetched...</h1></div>;
-
     const Button = styled.button`
       background-color: black;
       color: white;
@@ -35,9 +32,25 @@ class App extends React.Component {
       cursor: pointer;
     `;
 
-    let image = <></>; // empty html tag if no images exist
-    for (let url of this.state.imageUrls)
-      image = <img src={url} alt="Descriptive img" />;
+    let wisdomBlock;
+    if (this.state.dataIsLoaded) {
+      const images = [];
+      for (let i = 0; i < this.state.imageUrls.length; i++)
+        images[i] = <img key={i.toString()} src={this.state.imageUrls[i]} alt="Descriptive img" />;
+
+      wisdomBlock =
+        <div>
+          <pre>{this.state.wisdom}</pre>
+          <p>Source: {this.state.source}</p>
+          <p>Categories: {this.state.categories.join(', ')}</p>
+          <div id="images">
+            {images}
+          </div>
+        </div>;
+    }
+    else {
+      wisdomBlock = <p>Please wait until data is fetched from backend...</p>;
+    }
 
     // Return-statement uses JSX (JavaScript Syntax Extension)
     // Only JavaScript expressions (but no statements) can be used inside JSX with curly braces {}
@@ -47,10 +60,7 @@ class App extends React.Component {
         <header className="App-header">
           <h1>GetWise</h1>
           <Button onClick={this.reload}>Reload</Button>
-          <pre>{this.state.wisdom}</pre>
-          <p>Source: {this.state.source}</p>
-          <p>Categories: {this.state.categories.join(', ')}</p>
-          {image}
+          {wisdomBlock}
           <img src={logo} className="App-logo" alt="logo" />
           <a
             className="App-link"
