@@ -106,3 +106,6 @@ The website is accessible via a AWS Cloudfront distribution.
     * After creating the `./frontend/build` folder, upload its content to the S3 bucket for the static website.
     * Get hostname directly from the S3 bucket website endpoint or from the CloudFront domain name.
     * Access frontend via `curl http://hostname` or via web browser.
+
+## Enable CI/CD with CircleCi
+// TODO
