@@ -8,7 +8,7 @@ cd $scriptPath
 # Set region and output format for aws cli
 echo [default] >> ~/.aws/config
 echo region = eu-central-1 >> ~/.aws/config
-echo output = json >> ~/.aws/config 
+echo output = json >> ~/.aws/config
 
 # Resize ec2 storage
 ./resize.sh
