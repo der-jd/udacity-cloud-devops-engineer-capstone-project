@@ -1,7 +1,7 @@
 version: 2.1
 
 commands:
-  destroy-environments:
+  destroy-environment:
     description: Destroy frontend CloudFormation stack and resources given a workflow ID.
     parameters:
       WorkflowID:
@@ -11,7 +11,7 @@ commands:
           name: Destroy environments
           when: on_fail
           command: |
-            echo "Destroying environments: << parameters.WorkflowID >> "
+            echo "Destroying environment: << parameters.WorkflowID >> "
             echo "Empty S3 bucket for static frontend website..."
             aws s3 rm "s3://website-<< parameters.WorkflowID >>" --recursive
             echo "Delete S3 bucket for static frontend website..."
@@ -28,7 +28,7 @@ commands:
           when: on_fail
           command: |
             # Update kubectl to point to EKS cluster
-            aws eks update-kubeconfig --name cluster-1aa940fd-79db-4e9a-9954-ca60c5b021c8 # TODO: read cluster name from memstash?!
+            aws eks update-kubeconfig --name cluster-$CLUSTER_NAME
             kubectl delete -f ../backend/backend-deployment.yaml
             # TODO: point service to old K8s resources (old deployment)
 
@@ -80,198 +80,169 @@ jobs:
       - restore_cache:
           keys: [frontend-build]
       - run:
-          name: Test front-end
+          name: Test frontend
           command: |
             cd frontend
             npm install
-            npm test -- a # TODO: write test for frontend
+            npm test -- a
 
-# TODO: hier stehen geblieben
-#  test-backend:
-#    docker:
-#      - image: circleci/node:13.8.0
-#    steps:
-#      - checkout
-#      - restore_cache:
-#          keys: [backend-build]
-#      - run:
-#          name: Test back-end
-#          command: |
-#              cd backend
-#              npm install
-#              npm run test
-#
-#  scan-frontend:
-#    docker:
-#      - image: circleci/node:13.8.0
-#    steps:
-#      - checkout
-#      - restore_cache:
-#          keys: [frontend-build]
-#      - run:
-#          name: Scan front-end dependencies
-#          command: |
-#            cd frontend
-#            npm install
-#            npm audit fix --audit-level=critical --force
-#            npm audit fix --audit-level=critical --force
-#            npm audit --audit-level=critical
-#
-#  scan-backend:
-#    docker:
-#      - image: circleci/node:13.8.0
-#    steps:
-#      - checkout
-#      - restore_cache:
-#          keys: [backend-build]
-#      - run:
-#          name: Scan back-end dependencies
-#          command: |
-#              cd backend
-#              npm install
-#              npm audit fix --audit-level=critical --force
-#              npm audit fix --audit-level=critical --force
-#              npm audit --audit-level=critical
-#
-#  deploy-infrastructure:
-#    docker:
-#      - image: amazon/aws-cli
-#    steps:
-#      - checkout
-#      - run: yum -y install tar gzip
-#      - run:
-#          name: Ensure back-end infrastructure exists
-#          command: |
-#            aws cloudformation deploy \
-#              --template-file .circleci/files/backend.yml \
-#              --tags project=udapeople \
-#              --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-#              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
-#      - run:
-#          name: Ensure front-end infrastructure exist
-#          command: |
-#            aws cloudformation deploy \
-#              --template-file .circleci/files/frontend.yml \
-#              --tags project=udapeople \
-#              --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
-#              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
-#      - run:
-#          name: Add back-end ip to ansible inventory
-#          command: |
-#            aws ec2 describe-instances \
-#              --query 'Reservations[*].Instances[*].PublicIpAddress' \
-#              --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-#              --output text >> .circleci/ansible/inventory.txt
-#            echo "Contents  of the inventory.txt file is -------"
-#            cat .circleci/ansible/inventory.txt
-#      - run:
-#          name: Fetch and save Backend URL
-#          command: |
-#            BACKEND_IP=$(aws ec2 describe-instances \
-#              --query 'Reservations[*].Instances[*].PublicIpAddress' \
-#              --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-#              --output text)
-#            echo Backend IP: $BACKEND_IP
-#            curl -H "Content-Type: text/plain" -H "token: ${CIRCLE_WORKFLOW_ID}" --request PUT --data "http://$BACKEND_IP:3030" https://api.memstash.io/values/Backend_Url
-#      - persist_to_workspace:
-#          root: ~/
-#          paths:
-#            - project/.circleci/ansible/inventory.txt
-#      - destroy-environment:
-#          WorkflowID: ${CIRCLE_WORKFLOW_ID:0:7}
-#
-#  configure-infrastructure:
-#    docker:
-#      - image: python
-#    steps:
-#      - checkout
-#      - add_ssh_keys:
-#          fingerprints: [12:be:af:d5:da:61:00:cf:c9:c9:f5:95:99:42:12:6c]
-#      - attach_workspace:
-#          at: ~/
-#      - run:
-#          name: Install dependencies
-#          command: |
-#            apt update
-#            apt upgrade -y
-#            apt install -y ansible
-#            apt install -y awscli
-#      - run:
-#          name: Configure server
-#          command: |
-#            cd .circleci/ansible
-#            ansible-playbook -i inventory.txt configure-server.yml
-#      - destroy-environment:
-#          WorkflowID: ${CIRCLE_WORKFLOW_ID:0:7}
-#
-#  run-migrations:
-#    docker:
-#      - image: circleci/node:13.8.0
-#    steps:
-#      - checkout
-#      - restore_cache:
-#          keys: [backend-build]
-#      - run:
-#          name: Install dependencies
-#          command: |
-#            sudo apt update
-#            sudo apt upgrade -y
-#            sudo apt install -y awscli
-#      - run:
-#          name: Run migrations
-#          command: |
-#            cd backend
-#            npm install
-#            # Run and save the migration output
-#            npm run migrations > migrations_dump.txt
-#      - run:
-#          name: Send migration results to memstash
-#          command: |
-#            cat ~/project/backend/migrations_dump.txt
-#            if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
-#            then
-#              echo Migration OK
-#              curl -H "Content-Type: text/plain" -H "token: ${CIRCLE_WORKFLOW_ID}" --request PUT --data "1" https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7}
-#            else
-#              echo Migration failed / not necessary
-#              curl -H "Content-Type: text/plain" -H "token: ${CIRCLE_WORKFLOW_ID}" --request PUT --data "0" https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7}
-#            fi
-#      - destroy-environment:
-#          WorkflowID: ${CIRCLE_WORKFLOW_ID:0:7}
-#
-#  deploy-frontend:
-#    docker:
-#      - image: circleci/node:13.8.0
-#    steps:
-#      - checkout
-#      - run:
-#          name: Install dependencies
-#          command: |
-#            sudo apt update
-#            sudo apt upgrade -y
-#      - run:
-#          name: Install awscli
-#          command: |
-#            sudo apt install -y awscli
-#      - attach_workspace:
-#          at: ~/
-#      - run:
-#          name: Deploy frontend objects
-#          command: |
-#            export API_URL=$(curl -H "Content-Type: text/plain" -H "token: ${CIRCLE_WORKFLOW_ID}" --request GET https://api.memstash.io/values/Backend_Url)
-#            echo API_URL: $API_URL
-#            echo API_URL="$API_URL" >> frontend/.env
-#            cat frontend/.env
-#            cd frontend
-#            npm install
-#            npm run build
-#            tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
-#            aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
-#      - destroy-environment:
-#          WorkflowID: ${CIRCLE_WORKFLOW_ID:0:7}
-#      - revert-cluster:
-#          WorkflowID: ${CIRCLE_WORKFLOW_ID:0:7}
-#
+  test-backend:
+    docker:
+      - image: python:3.7.3-stretch
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            sudo apt update
+            sudo apt upgrade -y
+
+            # Install kubectl
+            curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+            sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+            rm kubectl
+
+            # Install minikube
+            curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+            sudo install minikube-linux-amd64 /usr/local/bin/minikube
+            rm minikube-linux-amd64
+      - run:
+          name: Set environment variables
+          command: |
+            echo DATABASE_USERNAME="$DATABASE_USERNAME" | sudo tee -a /etc/environment > /dev/null
+            echo DATABASE_PASSWORD="$DATABASE_PASSWORD" | sudo tee -a /etc/environment > /dev/null
+            echo DATABASE_NAME="$DATABASE_NAME" | sudo tee -a /etc/environment > /dev/null
+            echo DATABASE_HOST="$DATABASE_HOST" | sudo tee -a /etc/environment > /dev/null
+            echo DATABASE_PORT="$DATABASE_PORT" | sudo tee -a /etc/environment > /dev/null
+      - run:
+          name: Test backend in Docker container
+          command: |
+            ./scripts/run_docker.sh
+
+            export API_URL_DOCKER="localhost/api/wisdom"
+            echo "API_URL_DOCKER: $API_URL_DOCKER"
+
+            if curl $API_URL_DOCKER | grep "categories"; then
+              echo SUCCESS
+            else
+              echo FAIL
+              exit 1
+            fi
+
+            if curl $API_URL_DOCKER | grep "image-urls"; then
+              echo SUCCESS
+            else
+              echo FAIL
+              exit 1
+            fi
+
+            if curl $API_URL_DOCKER | grep "source"; then
+              echo SUCCESS
+            else
+              echo FAIL
+              exit 1
+            fi
+
+            if curl $API_URL_DOCKER | grep "wisdom"; then
+              echo SUCCESS
+            else
+              echo FAIL
+              exit 1
+            fi
+      - run:
+          name: Upload Docker image to repository
+          command: |
+            ./scripts/upload_docker.sh
+      - run:
+          name: Test backend in Minikube cluster
+          command: |
+            ./scripts/run_kubernetes_minikube.sh
+
+            export API_URL_K8S="$(minikube service $(minikube service list | grep -o -e ".[^ ]*capstone.[^ ]*") --url=true)/api/wisdom"
+            echo "API_URL_K8S: $API_URL_K8S"
+
+            if curl $API_URL_K8S | grep "categories"; then
+              echo SUCCESS
+            else
+              echo FAIL
+              exit 1
+            fi
+
+            if curl $API_URL_K8S | grep "image-urls"; then
+              echo SUCCESS
+            else
+              echo FAIL
+              exit 1
+            fi
+
+            if curl $API_URL_K8S | grep "source"; then
+              echo SUCCESS
+            else
+              echo FAIL
+              exit 1
+            fi
+
+            if curl $API_URL_K8S | grep "wisdom"; then
+              echo SUCCESS
+            else
+              echo FAIL
+              exit 1
+            fi
+
+            minikube stop
+
+  deploy-infrastructure:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Create S3 bucket for static frontend website
+          command: |
+            aws cloudformation deploy \
+              --stack-name "capstone-website-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --template-file .circleci/files/frontend-bucket.yaml \
+              --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID:0:7}" \
+              --tags project=capstone
+      - run:
+          name: Fetch and save LoadBalancer URL of K8s service
+          command: |
+            aws eks update-kubeconfig --name cluster-$CLUSTER_NAME
+            export LOADBALANCER_URL="http://$(kubectl get $(kubectl get svc -o name | grep -o -e ".*capstone.*") --output jsonpath='{.status.loadBalancer.ingress[0].hostname}'):8000/api/wisdom"
+            echo "LOADBALANCER_URL: $LOADBALANCER_URL"
+            curl -H "Content-Type: text/plain" -H "token: ${CIRCLE_WORKFLOW_ID}" --request PUT --data "$LOADBALANCER_URL" https://api.memstash.io/values/LoadBalancer_Url
+      - destroy-environment:
+          WorkflowID: ${CIRCLE_WORKFLOW_ID:0:7}
+
+  deploy-frontend:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            sudo apt update
+            sudo apt upgrade -y
+      - run:
+          name: Install awscli
+          command: |
+            sudo apt install -y awscli
+      - run:
+          name: Deploy frontend objects
+          command: |
+            export LOADBALANCER_URL="$(curl -H "Content-Type: text/plain" -H "token: ${CIRCLE_WORKFLOW_ID}" --request GET https://api.memstash.io/values/LoadBalancer_Url)"
+            echo "LOADBALANCER_URL: $LOADBALANCER_URL"
+            echo REACT_APP_HOST="$LOADBALANCER_URL" > frontend/.env.production
+            cat frontend/.env.production
+            cd frontend
+            npm install
+            npm run build
+            aws s3 cp build s3://website-${CIRCLE_WORKFLOW_ID:0:7} --recursive
+      - destroy-environment:
+          WorkflowID: ${CIRCLE_WORKFLOW_ID:0:7}
+
+# TODO hier stehen geblieben
 #  deploy-backend:
 #    docker:
 #      - image: circleci/node:13.8.0
