@@ -120,3 +120,5 @@ The website is accessible via a AWS Cloudfront distribution.
     * `DATABASE_NAME`
     * `DATABASE_HOST`
     * `DATABASE_PORT`
+4. Set the password for the DockerHub repository as environment variable in CircleCi.
+    * `DOCKERHUB_PASSWORD`
