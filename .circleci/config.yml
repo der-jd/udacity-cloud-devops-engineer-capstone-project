@@ -68,6 +68,10 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Install bash
+          command: |
+            apk add bash
+      - run:
           name: Build backend
           command: |
             ./scripts/run_docker.sh
