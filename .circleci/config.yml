@@ -84,7 +84,7 @@ jobs:
       - run:
           name: Build backend
           command: |
-            ./scripts/run_docker.sh
+            docker build --tag udacity-project ./backend
 
   test-frontend:
     docker:
