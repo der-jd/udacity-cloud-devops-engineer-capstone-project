@@ -68,6 +68,7 @@ jobs:
       - image: docker
     steps:
       - checkout
+      - setup_remote_docker
       - run:
           name: Install bash
           command: |
