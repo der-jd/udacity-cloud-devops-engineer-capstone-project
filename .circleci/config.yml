@@ -94,32 +94,35 @@ jobs:
 
   test-backend:
     docker:
-      - image: python:3.7.3-stretch
+      - image: docker
     steps:
       - checkout
+      - setup_remote_docker
       - run:
           name: Install dependencies
           command: |
-            sudo apt update
-            sudo apt upgrade -y
+            apk update
+            apk upgrade
+
+            apk add bash
 
             # Install kubectl
             curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-            sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+            install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
             rm kubectl
 
             # Install minikube
             curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
-            sudo install minikube-linux-amd64 /usr/local/bin/minikube
+            install minikube-linux-amd64 /usr/local/bin/minikube
             rm minikube-linux-amd64
       - run:
           name: Set environment variables
           command: |
-            echo DATABASE_USERNAME="$DATABASE_USERNAME" | sudo tee -a /etc/environment > /dev/null
-            echo DATABASE_PASSWORD="$DATABASE_PASSWORD" | sudo tee -a /etc/environment > /dev/null
-            echo DATABASE_NAME="$DATABASE_NAME" | sudo tee -a /etc/environment > /dev/null
-            echo DATABASE_HOST="$DATABASE_HOST" | sudo tee -a /etc/environment > /dev/null
-            echo DATABASE_PORT="$DATABASE_PORT" | sudo tee -a /etc/environment > /dev/null
+            echo DATABASE_USERNAME="$DATABASE_USERNAME" | tee -a /etc/environment > /dev/null
+            echo DATABASE_PASSWORD="$DATABASE_PASSWORD" | tee -a /etc/environment > /dev/null
+            echo DATABASE_NAME="$DATABASE_NAME" | tee -a /etc/environment > /dev/null
+            echo DATABASE_HOST="$DATABASE_HOST" | tee -a /etc/environment > /dev/null
+            echo DATABASE_PORT="$DATABASE_PORT" | tee -a /etc/environment > /dev/null
       - run:
           name: Test backend in Docker container
           command: |
