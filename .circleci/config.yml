@@ -74,6 +74,14 @@ jobs:
           command: |
             apk add bash
       - run:
+          name: Set environment variables
+          command: |
+            echo DATABASE_USERNAME="$DATABASE_USERNAME" | sudo tee -a /etc/environment > /dev/null
+            echo DATABASE_PASSWORD="$DATABASE_PASSWORD" | sudo tee -a /etc/environment > /dev/null
+            echo DATABASE_NAME="$DATABASE_NAME" | sudo tee -a /etc/environment > /dev/null
+            echo DATABASE_HOST="$DATABASE_HOST" | sudo tee -a /etc/environment > /dev/null
+            echo DATABASE_PORT="$DATABASE_PORT" | sudo tee -a /etc/environment > /dev/null
+      - run:
           name: Build backend
           command: |
             ./scripts/run_docker.sh
