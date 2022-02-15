@@ -41,7 +41,7 @@ jobs:
       - run:
           name: Lint code
           command: |
-            make install
+            pip install --upgrade pip && pip install -r backend/src/requirements.txt  # a call of 'make install' would need 'npm' to be installed first
             make install_hadolint
             make lint
 
