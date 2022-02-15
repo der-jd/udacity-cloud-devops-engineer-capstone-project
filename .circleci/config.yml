@@ -406,9 +406,9 @@ workflows:
   default:
     jobs:
       - lint-code
-      - build-frontend
+      - build-frontend:
           requires: [lint-code]
-      - build-backend
+      - build-backend:
           requires: [lint-code]
       - test-frontend:
           requires: [build-frontend]
