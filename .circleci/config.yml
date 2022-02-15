@@ -430,7 +430,3 @@ jobs:
 #          requires: [smoke-test]
 #      - cleanup:
 #          requires: [cloudfront-update]
-#
-## TODO:
-## - push Docker image to repository at the end of a successful build
-#
