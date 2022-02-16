@@ -104,7 +104,6 @@ jobs:
       - checkout
       - setup_remote_docker:
           docker_layer_caching: true
-      - kubernetes/install-kubectl
       - run:
           name: Install dependencies
           command: |
@@ -114,6 +113,7 @@ jobs:
             apk add bash
 
             apk add curl
+      - kubernetes/install-kubectl
       - run:
           name: Set environment variables
           command: |
