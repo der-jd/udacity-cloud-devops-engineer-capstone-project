@@ -1,5 +1,8 @@
 version: 2.1
 
+orbs: 
+  kubernetes: circleci/kubernetes@1.3.0
+
 commands:
   destroy-environment:
     description: Destroy frontend CloudFormation stack and resources given a workflow ID.
@@ -23,12 +26,13 @@ commands:
       WorkflowID:
         type: string
     steps:
+      - kubernetes/install-kubectl
       - run:
           name: Revert K8s resources
           when: on_fail
           command: |
             # Update kubectl to point to EKS cluster
-            aws eks update-kubeconfig --name cluster-$CLUSTER_NAME
+            aws eks update-kubeconfig --name cluster-$CLUSTER_NAME # TODO Install AWS CLI?!
             kubectl delete -f ../backend/backend-deployment.yaml
             # TODO: point service to old K8s resources (old deployment)
 
@@ -100,6 +104,7 @@ jobs:
       - checkout
       - setup_remote_docker:
           docker_layer_caching: true
+      - kubernetes/install-kubectl
       - run:
           name: Install dependencies
           command: |
@@ -109,16 +114,6 @@ jobs:
             apk add bash
 
             apk add curl
-
-            # Install kubectl
-            curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-            install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-            rm kubectl
-
-            # Install minikube
-            curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
-            install minikube-linux-amd64 /usr/local/bin/minikube
-            rm minikube-linux-amd64
       - run:
           name: Set environment variables
           command: |
@@ -131,51 +126,57 @@ jobs:
           name: Test backend in Docker container
           command: |
             docker build --tag udacity-project ./backend
-            CONTAINER_ID=$(docker run --rm -d -p 80:8000 --env-file /etc/environment --name udacity-app udacity-project)
-            echo "CONTAINER_ID: $CONTAINER_ID"
-
-            export API_URL_DOCKER="localhost/api/wisdom"
-            echo "API_URL_DOCKER: $API_URL_DOCKER"
-
-            if curl $API_URL_DOCKER | grep "categories"; then
-              echo SUCCESS
-            else
-              echo FAIL
-              exit 1
-            fi
-
-            if curl $API_URL_DOCKER | grep "image-urls"; then
-              echo SUCCESS
-            else
-              echo FAIL
-              exit 1
-            fi
-
-            if curl $API_URL_DOCKER | grep "source"; then
-              echo SUCCESS
-            else
-              echo FAIL
-              exit 1
-            fi
-
-            if curl $API_URL_DOCKER | grep "wisdom"; then
-              echo SUCCESS
-            else
-              echo FAIL
-              exit 1
-            fi
-
-            docker stop $CONTAINER_ID
+#            CONTAINER_ID=$(docker run --rm -d -p 80:8000 --env-file /etc/environment --name udacity-app udacity-project)
+#            echo "CONTAINER_ID: $CONTAINER_ID"
+#
+#            export API_URL_DOCKER="localhost/api/wisdom"
+#            echo "API_URL_DOCKER: $API_URL_DOCKER"
+#
+#            if curl $API_URL_DOCKER | grep "categories"; then
+#              echo SUCCESS
+#            else
+#              echo FAIL
+#              exit 1
+#            fi
+#
+#            if curl $API_URL_DOCKER | grep "image-urls"; then
+#              echo SUCCESS
+#            else
+#              echo FAIL
+#              exit 1
+#            fi
+#
+#            if curl $API_URL_DOCKER | grep "source"; then
+#              echo SUCCESS
+#            else
+#              echo FAIL
+#              exit 1
+#            fi
+#
+#            if curl $API_URL_DOCKER | grep "wisdom"; then
+#              echo SUCCESS
+#            else
+#              echo FAIL
+#              exit 1
+#            fi
+#
+#            docker stop $CONTAINER_ID
       - run:
           name: Upload Docker image to repository
           command: |
             ./scripts/upload_docker.sh
+      - kubernetes/create-or-update-resource:
+          get-rollout-status: true
+          resource-file-path: ./backend/backend-deployment.yaml
+          show-kubectl-command: true
+      - kubernetes/create-or-update-resource:
+          get-rollout-status: true
+          resource-file-path: ./backend/backend-service.yaml
+          show-kubectl-command: true
       - run:
-          name: Test backend in Minikube cluster
+          name: Test backend in K8s cluster
           command: |
-            ./scripts/run_kubernetes_minikube.sh
-
-            export API_URL_K8S="$(minikube service $(minikube service list | grep -o -e ".[^ ]*capstone.[^ ]*") --url=true)/api/wisdom"
+            export API_URL_K8S="kubectl get $(kubectl get svc -o name | grep -o -e ".*capstone.*") --output jsonpath='{.status.loadBalancer.ingress[0].hostname}'"
             echo "API_URL_K8S: $API_URL_K8S"
 
             if curl $API_URL_K8S | grep "categories"; then
@@ -205,8 +206,6 @@ jobs:
               echo FAIL
               exit 1
             fi
-
-            minikube stop
 
   deploy-infrastructure:
     docker:
