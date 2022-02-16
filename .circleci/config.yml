@@ -2,6 +2,7 @@ version: 2.1
 
 orbs: 
   kubernetes: circleci/kubernetes@1.3.0
+  minikube: ccpgames/minikube@0.0.1
 
 commands:
   destroy-environment:
@@ -165,6 +166,11 @@ jobs:
           name: Upload Docker image to repository
           command: |
             ./scripts/upload_docker.sh
+      - minikube/minikube-start
+      - run:
+          name: Configure kubectl for Minikube
+          command: |
+            minikube update-context
       - kubernetes/create-or-update-resource:
           get-rollout-status: true
           resource-file-path: ./backend/backend-deployment.yaml
@@ -174,9 +180,9 @@ jobs:
           resource-file-path: ./backend/backend-service.yaml
           show-kubectl-command: true
       - run:
-          name: Test backend in K8s cluster
+          name: Test backend in Minikube
           command: |
-            export API_URL_K8S="kubectl get $(kubectl get svc -o name | grep -o -e ".*capstone.*") --output jsonpath='{.status.loadBalancer.ingress[0].hostname}'"
+            export API_URL_K8S="minikube service $(minikube service list | grep -o -e ".[^ ]*capstone.[^ ]*") --url=true"
             echo "API_URL_K8S: $API_URL_K8S"
 
             if curl $API_URL_K8S | grep "categories"; then
