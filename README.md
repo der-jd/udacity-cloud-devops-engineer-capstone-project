@@ -45,9 +45,11 @@ The website is accessible via a AWS Cloudfront distribution.
 * Install `kubectl` on Linux (https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/).
     * `curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"`
     * `sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl`
+    * `rm kubectl`
 * Install `minikube` on Linux.
     * `curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64`
     * `sudo install minikube-linux-amd64 /usr/local/bin/minikube`
+    * `rm minikube-linux-amd64`
 * Set the necessary environment variables for the database access. This step is **always** necessary and must be done even if running `./scripts/prepare_ec2_env.sh`.
     ```
     echo DATABASE_USERNAME="xxx" | sudo tee -a /etc/environment > /dev/null
