@@ -2,7 +2,6 @@ version: 2.1
 
 orbs: 
   kubernetes: circleci/kubernetes@1.3.0
-  minikube: ccpgames/minikube@0.0.1
 
 commands:
   destroy-environment:
@@ -114,6 +113,10 @@ jobs:
             apk add bash
 
             apk add curl
+
+            curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+            sudo install minikube-linux-amd64 /usr/local/bin/minikube
+            rm minikube-linux-amd64
       - kubernetes/install-kubectl
       - run:
           name: Set environment variables
@@ -166,7 +169,6 @@ jobs:
           name: Upload Docker image to repository
           command: |
             ./scripts/upload_docker.sh
-      - minikube/minikube-start
       - run:
           name: Configure kubectl for Minikube
           command: |
