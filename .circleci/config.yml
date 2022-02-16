@@ -112,12 +112,10 @@ jobs:
 
             apk add bash
 
-            apk add curl
-
-            curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
-            install minikube-linux-amd64 /usr/local/bin/minikube
-            rm minikube-linux-amd64
-      - kubernetes/install-kubectl
+#            curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+#            install minikube-linux-amd64 /usr/local/bin/minikube
+#            rm minikube-linux-amd64
+#      - kubernetes/install-kubectl
       - run:
           name: Set environment variables
           command: |
@@ -130,92 +128,99 @@ jobs:
           name: Test backend in Docker container
           command: |
             docker build --tag udacity-project ./backend
-#            CONTAINER_ID=$(docker run --rm -d -p 80:8000 --env-file /etc/environment --name udacity-app udacity-project)
-#            echo "CONTAINER_ID: $CONTAINER_ID"
-#
-#            export API_URL_DOCKER="localhost/api/wisdom"
-#            echo "API_URL_DOCKER: $API_URL_DOCKER"
-#
-#            if curl $API_URL_DOCKER | grep "categories"; then
-#              echo SUCCESS
-#            else
-#              echo FAIL
-#              exit 1
-#            fi
-#
-#            if curl $API_URL_DOCKER | grep "image-urls"; then
-#              echo SUCCESS
-#            else
-#              echo FAIL
-#              exit 1
-#            fi
-#
-#            if curl $API_URL_DOCKER | grep "source"; then
-#              echo SUCCESS
-#            else
-#              echo FAIL
-#              exit 1
-#            fi
-#
-#            if curl $API_URL_DOCKER | grep "wisdom"; then
-#              echo SUCCESS
-#            else
-#              echo FAIL
-#              exit 1
-#            fi
-#
-#            docker stop $CONTAINER_ID
+            CONTAINER_ID=$(docker run --rm -d -p 80:8000 --env-file /etc/environment --name udacity-app udacity-project)
+            echo "CONTAINER_ID: $CONTAINER_ID"
+
+            docker exec -it $CONTAINER_ID bash
+
+            export API_URL_DOCKER="localhost:8000/api/wisdom"
+            echo "API_URL_DOCKER: $API_URL_DOCKER"
+
+            if curl $API_URL_DOCKER | grep "categories"; then
+              echo SUCCESS
+            else
+              echo FAIL
+              exit 1
+            fi
+
+            if curl $API_URL_DOCKER | grep "image-urls"; then
+              echo SUCCESS
+            else
+              echo FAIL
+              exit 1
+            fi
+
+            if curl $API_URL_DOCKER | grep "source"; then
+              echo SUCCESS
+            else
+              echo FAIL
+              exit 1
+            fi
+
+            if curl $API_URL_DOCKER | grep "wisdom"; then
+              echo SUCCESS
+            else
+              echo FAIL
+              exit 1
+            fi
+
+            exit
+
+            docker stop $CONTAINER_ID
       - run:
           name: Upload Docker image to repository
           command: |
             ./scripts/upload_docker.sh
-      - run:
-          name: Configure kubectl for Minikube
-          command: |
-            minikube update-context
-      - kubernetes/create-or-update-resource:
-          get-rollout-status: true
-          resource-file-path: ./backend/backend-deployment.yaml
-          show-kubectl-command: true
-      - kubernetes/create-or-update-resource:
-          get-rollout-status: true
-          resource-file-path: ./backend/backend-service.yaml
-          show-kubectl-command: true
-      - run:
-          name: Test backend in Minikube
-          command: |
-            export API_URL_K8S="minikube service $(minikube service list | grep -o -e ".[^ ]*capstone.[^ ]*") --url=true"
-            echo "API_URL_K8S: $API_URL_K8S"
-
-            if curl $API_URL_K8S | grep "categories"; then
-              echo SUCCESS
-            else
-              echo FAIL
-              exit 1
-            fi
-
-            if curl $API_URL_K8S | grep "image-urls"; then
-              echo SUCCESS
-            else
-              echo FAIL
-              exit 1
-            fi
-
-            if curl $API_URL_K8S | grep "source"; then
-              echo SUCCESS
-            else
-              echo FAIL
-              exit 1
-            fi
-
-            if curl $API_URL_K8S | grep "wisdom"; then
-              echo SUCCESS
-            else
-              echo FAIL
-              exit 1
-            fi
-
-            minikube stop
+#      - run:
+#          name: Configure kubectl for Minikube
+#          command: |
+#            adduser minikube -D
+#            su - minikube
+#            minikube start
+#            minikube update-context
+#      - kubernetes/create-or-update-resource:
+#          get-rollout-status: true
+#          resource-file-path: ./backend/backend-deployment.yaml
+#          show-kubectl-command: true
+#      - kubernetes/create-or-update-resource:
+#          get-rollout-status: true
+#          resource-file-path: ./backend/backend-service.yaml
+#          show-kubectl-command: true
+#      - run:
+#          name: Test backend in Minikube
+#          command: |
+#            export API_URL_K8S="minikube service $(minikube service list | grep -o -e ".[^ ]*capstone.[^ ]*") --url=true"
+#            echo "API_URL_K8S: $API_URL_K8S"
+#
+#            if curl $API_URL_K8S | grep "categories"; then
+#              echo SUCCESS
+#            else
+#              echo FAIL
+#              exit 1
+#            fi
+#
+#            if curl $API_URL_K8S | grep "image-urls"; then
+#              echo SUCCESS
+#            else
+#              echo FAIL
+#              exit 1
+#            fi
+#
+#            if curl $API_URL_K8S | grep "source"; then
+#              echo SUCCESS
+#            else
+#              echo FAIL
+#              exit 1
+#            fi
+#
+#            if curl $API_URL_K8S | grep "wisdom"; then
+#              echo SUCCESS
+#            else
+#              echo FAIL
+#              exit 1
+#            fi
+#
+#            minikube stop
 
   deploy-infrastructure:
     docker:
@@ -233,7 +238,7 @@ jobs:
       - run:
           name: Fetch and save LoadBalancer URL of K8s service
           command: |
-            aws eks update-kubeconfig --name cluster-$CLUSTER_NAME
+            aws eks update-kubeconfig --name $CLUSTER_NAME
             export LOADBALANCER_URL="http://$(kubectl get $(kubectl get svc -o name | grep -o -e ".*capstone.*") --output jsonpath='{.status.loadBalancer.ingress[0].hostname}'):8000/api/wisdom"
             echo "LOADBALANCER_URL: $LOADBALANCER_URL"
             curl -H "Content-Type: text/plain" -H "token: ${CIRCLE_WORKFLOW_ID}" --request PUT --data "$LOADBALANCER_URL" https://api.memstash.io/values/LoadBalancer_Url
