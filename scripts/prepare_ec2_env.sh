@@ -11,7 +11,7 @@ echo region = eu-central-1 >> ~/.aws/config
 echo output = json >> ~/.aws/config
 
 # Resize ec2 storage
-./resize.sh
+./resize.sh 40
 
 cd ..
 
