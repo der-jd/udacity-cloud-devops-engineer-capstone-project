@@ -129,7 +129,7 @@ jobs:
           name: Test backend in Docker container
           command: |
             docker build --tag udacity-project ./backend
-            docker run --rm -p 80:8000 --env-file /etc/environment --name udacity-app udacity-project
+            CONTAINER_ID=$(docker run --rm -d -p 80:8000 --env-file /etc/environment --name udacity-app udacity-project)
 
             export API_URL_DOCKER="localhost/api/wisdom"
             echo "API_URL_DOCKER: $API_URL_DOCKER"
@@ -161,6 +161,8 @@ jobs:
               echo FAIL
               exit 1
             fi
+
+            docker stop $CONTAINER_ID
       - run:
           name: Upload Docker image to repository
           command: |
