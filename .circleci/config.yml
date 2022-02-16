@@ -213,6 +213,8 @@ jobs:
               exit 1
             fi
 
+            minikube stop
+
   deploy-infrastructure:
     docker:
       - image: amazon/aws-cli
