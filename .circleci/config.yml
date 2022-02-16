@@ -128,7 +128,8 @@ jobs:
       - run:
           name: Test backend in Docker container
           command: |
-            ./scripts/run_docker.sh
+            docker build --tag udacity-project ./backend
+            docker run --rm -p 80:8000 --env-file /etc/environment --name udacity-app udacity-project
 
             export API_URL_DOCKER="localhost/api/wisdom"
             echo "API_URL_DOCKER: $API_URL_DOCKER"
