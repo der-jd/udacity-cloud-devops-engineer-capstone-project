@@ -22,7 +22,7 @@ kubectl apply -f ../backend/backend-service.yaml
 # Wait until pods are available
 echo $(date) # TODO: delete after test
 deploymentName="$(echo $output | grep -o -E "^\S+")"
-if timeout 600s kubectl wait $deploymentName --for condition=available; then
+if kubectl wait --for condition=available --timeout=180s $deploymentName; then
     kubectl get deploy
     kubectl get svc
     echo $(date) # TODO: delete after test
@@ -32,6 +32,6 @@ else
     kubectl get deploy
     kubectl get svc
     echo $(date) # TODO: delete after test
-    echo "ERROR: Deployment not available after 600 s!"
+    echo "ERROR: Deployment not available after 180 s!"
     exit 1
 fi
