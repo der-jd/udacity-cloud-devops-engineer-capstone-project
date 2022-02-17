@@ -105,11 +105,11 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            apt-get update
-            apt-get upgrade -y
+            sudo apt-get update
+            sudo apt-get upgrade -y
 
             curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
-            install minikube-linux-amd64 /usr/local/bin/minikube
+            sudo install minikube-linux-amd64 /usr/local/bin/minikube
             rm minikube-linux-amd64
 #      - kubernetes/install-kubectl
       - run:
