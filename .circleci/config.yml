@@ -175,9 +175,6 @@ jobs:
             export API_URL_K8S="$(minikube service $(minikube service list | grep -o -e ".[^ ]*capstone.[^ ]*") --url=true)/api/wisdom"
             echo "API_URL_K8S: $API_URL_K8S"
 
-            echo "Wait 20 s until pods are properly running..."
-            sleep 20s
-
             if curl $API_URL_K8S | grep "categories"; then
               echo SUCCESS
             else
