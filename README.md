@@ -1,5 +1,5 @@
 *// TODO insert correct Circle CI Batch*
-[![CircleCI](https://circleci.com/gh/der-jd/udacity-cloud-devops-engineer-microservices-project/tree/main.svg?style=shield)](https://circleci.com/gh/der-jd/udacity-cloud-devops-engineer-microservices-project/tree/main)
+[![CircleCI](https://circleci.com/gh/der-jd/udacity-cloud-devops-engineer-capstone-project/tree/main.svg?style=shield)](https://circleci.com/gh/der-jd/udacity-cloud-devops-engineer-capstone-project/tree/main)
 
 # Project 'GetWise' Overview
 
