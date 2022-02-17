@@ -19,7 +19,15 @@ kubectl apply -f ../backend/backend-deployment.yaml
 kubectl apply -f ../backend/backend-service.yaml
 
 # Wait until pods are running
-sleep 15s
-
-kubectl get deploy
-kubectl get svc
+DEPLOYMENT_NAME="$(kubectl get deploy -o name | grep -o -e ".*capstone.*")"
+if timeout 60s kubectl wait $DEPLOYMENT_NAME --for condition=available; then
+    kubectl get deploy
+    kubectl get svc
+    echo "Deployment available!"
+    exit 0
+else
+    kubectl get deploy
+    kubectl get svc
+    echo "ERROR: Deployment not available after 60 s!"
+    exit 1
+fi
