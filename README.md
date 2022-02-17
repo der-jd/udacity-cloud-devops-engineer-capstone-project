@@ -88,7 +88,7 @@ The website is accessible via a AWS Cloudfront distribution.
     * Run `./scripts/run_docker.sh` if not already done to build the image (only necessary if image has changed or not been uploaded yet).
     * Run `./scripts/upload_docker.sh` to upload the image to DockerHub (only necessary if image has changed or not been uploaded yet).
     * Run `./scripts/run_kubernetes_minikube.sh`.
-    * Get service endpoint (`http://host-ip:port`) via `minikube service $(minikube service list | grep -o -e ".[^ ]*capstone.[^ ]*") --url=true`.
+    * Get service endpoint (`http://host-ip:port`) via `minikube service $(minikube service list | grep -o -e "\S*capstone\S*") --url=true`.
     * Access API via `curl http://host-ip:port` or via web browser.
     * Delete K8s resources after use via `./scripts/delete_kubernetes_resources.sh`.
     * Delete minikube cluster via `minikube delete`.

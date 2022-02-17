@@ -172,7 +172,7 @@ jobs:
           command: |
             ./scripts/run_kubernetes_minikube.sh
 
-            export API_URL_K8S="$(minikube service $(minikube service list | grep -o -e ".[^ ]*capstone.[^ ]*") --url=true)/api/wisdom"
+            export API_URL_K8S="$(minikube service $(minikube service list | grep -o -e "\S*capstone\S*") --url=true)/api/wisdom"
             echo "API_URL_K8S: $API_URL_K8S"
 
             if curl $API_URL_K8S | grep "categories"; then
