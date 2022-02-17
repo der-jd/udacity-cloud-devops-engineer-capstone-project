@@ -13,11 +13,20 @@ aws eks update-kubeconfig --name cluster-$uuid
 
 kubectl create secret generic database-access --from-env-file=/etc/environment
 
-kubectl apply -f ../backend/backend-deployment.yaml
+output="$(kubectl apply -f ../backend/backend-deployment.yaml)"
+echo $output
 kubectl apply -f ../backend/backend-service.yaml
 
-# Wait until pods are running
-sleep 15s
-
-kubectl get deploy
-kubectl get svc
+# Wait until pods are available
+deploymentName="$(echo $output | grep -o -E "^\S+")"
+if timeout 120s kubectl wait $deploymentName --for condition=available; then
+    kubectl get deploy
+    kubectl get svc
+    echo "Deployment available!"
+    exit 0
+else
+    kubectl get deploy
+    kubectl get svc
+    echo "ERROR: Deployment not available after 120 s!"
+    exit 1
+fi
