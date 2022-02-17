@@ -241,9 +241,6 @@ jobs:
           command: |
             sudo apt update
             sudo apt upgrade -y
-      - run:
-          name: Install awscli
-          command: |
             sudo apt install -y awscli
       - run:
           name: Deploy frontend website
