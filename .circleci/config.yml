@@ -99,7 +99,7 @@ jobs:
 
   test-backend:
     machine:
-      image: ubuntu-1604:202007-01
+      image: ubuntu-1604:202007-01 # Use machine executor instead of Docker executor to avoid a container-in-container environment for the backend test.
     steps:
       - checkout
       - run:
