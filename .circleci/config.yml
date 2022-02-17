@@ -223,7 +223,7 @@ jobs:
           name: Fetch and save LoadBalancer URL of K8s service
           command: |
             aws eks update-kubeconfig --name $CLUSTER_NAME
-            export LOADBALANCER_URL="http://$(kubectl get $(kubectl get svc -o name | grep -o -e ".*capstone.*") --output jsonpath='{.status.loadBalancer.ingress[0].hostname}'):8000/api/wisdom"
+            export LOADBALANCER_URL="http://$(kubectl get $(kubectl get svc -o name | grep -o -e ".*capstone.*") --output jsonpath='{.status.loadBalancer.ingress[0].hostname}'):8000"
             echo "LOADBALANCER_URL: $LOADBALANCER_URL"
             curl https://kvdb.io/$KVDB_BUCKET_ID/LoadBalancer_Url -d "$LOADBALANCER_URL" -u $KVDB_WRITE_KEY:$KVDB_WRITE_KEY
       - destroy-environment:
