@@ -29,6 +29,6 @@ if timeout 120s kubectl wait $deploymentName --for condition=available; then
 else
     kubectl get deploy
     kubectl get svc
-    echo "ERROR: Deployment not available after 60 s!"
+    echo "ERROR: Deployment not available after 120 s!"
     exit 1
 fi
