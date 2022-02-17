@@ -15,12 +15,13 @@ minikube update-context
 
 kubectl create secret generic database-access --from-env-file=/etc/environment
 
-kubectl apply -f ../backend/backend-deployment.yaml
+output="$(kubectl apply -f ../backend/backend-deployment.yaml)"
+echo $output
 kubectl apply -f ../backend/backend-service.yaml
 
-# Wait until pods are running
-DEPLOYMENT_NAME="$(kubectl get deploy -o name | grep -o -e ".*capstone.*")"
-if timeout 60s kubectl wait $DEPLOYMENT_NAME --for condition=available; then
+# Wait until pods are available
+deploymentName="$(echo $output | grep -o -E "^\S+")"
+if timeout 60s kubectl wait $deploymentName --for condition=available; then
     kubectl get deploy
     kubectl get svc
     echo "Deployment available!"
