@@ -21,7 +21,7 @@ kubectl apply -f ../backend/backend-service.yaml
 
 # Wait until pods are available
 deploymentName="$(echo $output | grep -o -E "^\S+")"
-if timeout 60s kubectl wait $deploymentName --for condition=available; then
+if timeout 120s kubectl wait $deploymentName --for condition=available; then
     kubectl get deploy
     kubectl get svc
     echo "Deployment available!"
