@@ -39,7 +39,7 @@ The website is accessible via a AWS Cloudfront distribution.
     * Or run `./scripts/prepare_ec2_env.sh`.
       This resizes the volume and installs all necessary dependencies.
       The following steps can be skipped then, **except** the setting of the necessary environment variables for the database access (see below).
-    * Restart the EC2 intance to apply the resized volume.
+    * Restart the EC2 instance to apply the resized volume.
 * Run `make install` to install the necessary dependencies.
 * Run `sudo make install_hadolint` to install hadolint on Linux.
 * Install `Docker` if necessary.
