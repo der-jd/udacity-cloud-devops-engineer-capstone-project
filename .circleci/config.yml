@@ -32,7 +32,7 @@ commands:
           when: on_fail
           command: |
             # Update kubectl to point to EKS cluster
-            aws eks update-kubeconfig --name cluster-$CLUSTER_NAME # TODO Install AWS CLI?!
+            aws eks update-kubeconfig --name $CLUSTER_NAME # TODO Install AWS CLI?!
             kubectl delete -f ../backend/backend-deployment.yaml
             # TODO: point service to old K8s resources (old deployment)
 
