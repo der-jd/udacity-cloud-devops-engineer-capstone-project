@@ -124,7 +124,7 @@ jobs:
           name: Test backend in Docker container
           command: |
             docker build --tag udacity-project ./backend
-            CONTAINER_ID=$(docker run --rm -d -p 80:8000 --env-file /etc/environment --name udacity-app udacity-project)
+            export CONTAINER_ID=$(docker run --rm -d -p 80:8000 --env-file /etc/environment --name udacity-app udacity-project)
             echo "CONTAINER_ID: $CONTAINER_ID"
 
             export API_URL_DOCKER="localhost/api/wisdom"
