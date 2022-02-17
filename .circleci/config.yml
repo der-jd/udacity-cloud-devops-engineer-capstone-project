@@ -131,6 +131,11 @@ jobs:
             export API_URL_DOCKER="localhost/api/wisdom"
             echo "API_URL_DOCKER: $API_URL_DOCKER"
 
+            echo "Wait 20 s until Docker container is properly running..."
+            # Otherwise there is an error in CircleCi (curl: (56) Recv failure: Connection reset by peer) even curl is possible in
+            # the machine itself when logging in via SSH.
+            sleep 20s
+
             if curl $API_URL_DOCKER | grep "categories"; then
               echo SUCCESS
             else
