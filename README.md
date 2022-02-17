@@ -126,3 +126,8 @@ The website is accessible via a AWS Cloudfront distribution.
     * `DATABASE_PORT`
 4. Set the password for the DockerHub repository as environment variable in CircleCi.
     * `DOCKERHUB_PASSWORD`
+5. Set the keys to access the KVdb bucket as environment variables in CircleCi (https://kvdb.io/docs/api/).
+    * `KVDB_BUCKET_ID`
+    * `KVDB_SECRET_KEY`
+    * `KVDB_WRITE_KEY`
+    * `KVDB_READ_KEY`
