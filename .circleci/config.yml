@@ -132,8 +132,6 @@ jobs:
             echo "API_URL_DOCKER: $API_URL_DOCKER"
 
             echo "Wait 20 s until Docker container is properly running..."
-            # Otherwise there is an error in CircleCi (curl: (56) Recv failure: Connection reset by peer) even curl is possible in
-            # the machine itself when logging in via SSH.
             sleep 20s
 
             if curl $API_URL_DOCKER | grep "categories"; then
@@ -173,8 +171,12 @@ jobs:
           name: Test backend in Minikube
           command: |
             ./scripts/run_kubernetes_minikube.sh
+
             export API_URL_K8S="$(minikube service $(minikube service list | grep -o -e ".[^ ]*capstone.[^ ]*") --url=true)/api/wisdom"
             echo "API_URL_K8S: $API_URL_K8S"
+
+            echo "Wait 20 s until pods are properly running..."
+            sleep 20s
 
             if curl $API_URL_K8S | grep "categories"; then
               echo SUCCESS
