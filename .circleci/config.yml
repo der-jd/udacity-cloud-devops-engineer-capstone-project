@@ -210,6 +210,7 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
+      - kubernetes/install-kubectl
       - run:
           name: Create S3 bucket for static frontend website
           command: |
