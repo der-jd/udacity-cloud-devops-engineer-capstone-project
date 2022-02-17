@@ -26,8 +26,9 @@ The website is accessible via a AWS Cloudfront distribution.
 
 * Run `make setup`.
 * Activate virtual environment with `source ~/.udacity/bin/activate` (deactivate with `deactivate`).
-* When working on an AWS EC2 instance:
+* When working on an AWS EC2 instance / Cloud9:
     * If the application should run locally, open the ports `80` and `8000` (for backend) and port `8080` (for frontend) in the corresponding security group.
+    * Deactivate `AWS managed temporary credentials` under `Preferences`->`AWS Settings`->`Credentials` in the Cloud9 IDE.
     * Attach the necessary IAM role / policies to the instance to be able to create and manage the AWS infrastructure (CloudFormation scripts, etc.).
         * Give the EC2 instance admin rights
         * https://docs.aws.amazon.com/prescriptive-guidance/latest/patterns/deploy-an-amazon-eks-cluster-from-aws-cloud9-using-an-ec2-instance-profile.html
@@ -38,6 +39,7 @@ The website is accessible via a AWS Cloudfront distribution.
     * Or run `./scripts/prepare_ec2_env.sh`.
       This resizes the volume and installs all necessary dependencies.
       The following steps can be skipped then, **except** the setting of the necessary environment variables for the database access (see below).
+    * Restart the EC2 intance to apply the resized volume.
 * Run `make install` to install the necessary dependencies.
 * Run `sudo make install_hadolint` to install hadolint on Linux.
 * Install `Docker` if necessary.
