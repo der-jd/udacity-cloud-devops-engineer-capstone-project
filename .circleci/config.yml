@@ -32,8 +32,8 @@ commands:
           when: on_fail
           command: |
             # Update kubectl to point to EKS cluster
-            aws eks update-kubeconfig --name $CLUSTER_NAME # TODO Install AWS CLI?!
-            kubectl delete -f ../backend/backend-deployment.yaml
+            aws eks update-kubeconfig --name $CLUSTER_NAME
+            kubectl delete -f ./backend/backend-deployment.yaml
             # TODO: point service to old K8s resources (old deployment)
 
 jobs:
@@ -166,7 +166,7 @@ jobs:
       - run:
           name: Upload Docker image to repository
           command: |
-            ./scripts/upload_docker.sh
+            ./scripts/upload_docker.sh # TODO use current workflow id as tag (--> pass as parameter to script). upload initial tag with default uuid as tag id
       - run:
           name: Test backend in Minikube
           command: |
@@ -256,89 +256,97 @@ jobs:
       - destroy-environment:
           WorkflowID: ${CIRCLE_WORKFLOW_ID:0:7}
 
-# TODO hier stehen geblieben
-#  deploy-backend:
-#    docker:
-#      - image: circleci/node:13.8.0
-#    steps:
-#      - checkout
-#      - add_ssh_keys:
-#          fingerprints: [12:be:af:d5:da:61:00:cf:c9:c9:f5:95:99:42:12:6c]
-#      - attach_workspace:
-#          at: ~/
-#      - run:
-#          name: Install dependencies
-#          command: |
-#            sudo apt update
-#            sudo apt upgrade -y
-#            sudo apt install -y ansible
-#            sudo apt install -y awscli
-#      - run:
-#          name: Deploy backend
-#          command: |
-#            cd backend
-#            npm i
-#            npm run build
-#            cp package* ./dist
-#            cd ..
-#            # Zip the directory
-#            tar -C backend -czvf artifact.tar.gz .
-#            cd .circleci/ansible
-#            echo "Contents  of the inventory.txt file is -------"
-#            cat inventory.txt
-#            ansible-playbook -i inventory.txt deploy-backend.yml
-#      - destroy-environment:
-#          WorkflowID: ${CIRCLE_WORKFLOW_ID:0:7}
-#      - revert-cluster:
-#          WorkflowID: ${CIRCLE_WORKFLOW_ID:0:7}
-#
-#  smoke-test:
-#    docker:
-#      - image: circleci/node:13.8.0
-#    steps:
-#      - checkout
-#      - run:
-#          name: Install dependencies
-#          command: |
-#            sudo apt update
-#            sudo apt upgrade -y
-#            sudo apt install -y curl
-#            sudo apt install -y awscli
-#            aws --version
-#      - run:
-#          name: Backend smoke test.
-#          command: |
-#            # Fetch and prepare the BACKEND_IP env var
-#            export BACKEND_IP=$(aws ec2 describe-instances \
-#              --query 'Reservations[*].Instances[*].PublicIpAddress' \
-#              --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-#              --output text)
-#            export API_URL="http://${BACKEND_IP}:3030"
-#            echo "API_URL = ${API_URL}"
-#            if curl "${API_URL}/api/status" | grep "ok"
-#            then
-#              echo SUCCESS
-#              exit 0
-#            else
-#              echo FAIL
-#              exit 1
-#            fi
-#      - run:
-#          name: Frontend smoke test.
-#          command: |
-#            URL="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website.${AWS_DEFAULT_REGION}.amazonaws.com/#/employees"
-#            echo ${URL}
-#            if curl -s ${URL} | grep "Welcome"
-#            then
-#              exit 0
-#            else
-#              exit 1
-#            fi
-#      - destroy-environment:
-#          WorkflowID: ${CIRCLE_WORKFLOW_ID:0:7}
-#      - revert-cluster:
-#          WorkflowID: ${CIRCLE_WORKFLOW_ID:0:7}
-#
+  deploy-backend:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            sudo apt update
+            sudo apt upgrade -y
+            sudo apt install -y awscli
+      - run:
+          name: Deploy backend
+          command: |
+            echo "Update deployment and service..."
+            # Grep old id from backend-deployment via kubectl get deploy -o name | grep -o -e ".*capstone.*"
+            # save old id to KVdb as old workflow id
+            # update used container tag to current workflow id
+            # change old id in service and deployment to new id --> new deployment; service gets updated to new deployment --> blue/green deployment
+            # save cache to save changed service and backend yaml file (with new id)
+            ./scripts/run_kubernetes_eks.sh
+      - destroy-environment:
+          WorkflowID: ${CIRCLE_WORKFLOW_ID:0:7}
+      - revert-cluster:
+          WorkflowID: ${CIRCLE_WORKFLOW_ID:0:7}
+
+  smoke-test:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            sudo apt update
+            sudo apt upgrade -y
+            sudo apt install -y curl
+            sudo apt install -y awscli
+            aws --version
+      - run:
+          name: Backend smoke test.
+          command: |
+            export LOADBALANCER_URL="$(curl https://kvdb.io/$KVDB_BUCKET_ID/LoadBalancer_Url -u $KVDB_READ_KEY:$KVDB_READ_KEY)"
+            export API_URL="$LOADBALANCER_URL/api/wisdom"
+            echo "API_URL: $API_URL"
+
+            if curl $API_URL | grep "categories"; then
+              echo SUCCESS
+            else
+              echo FAIL
+              exit 1
+            fi
+
+            if curl $API_URL | grep "image-urls"; then
+              echo SUCCESS
+            else
+              echo FAIL
+              exit 1
+            fi
+
+            if curl $API_URL | grep "source"; then
+              echo SUCCESS
+            else
+              echo FAIL
+              exit 1
+            fi
+
+            if curl $API_URL | grep "wisdom"; then
+              echo SUCCESS
+            else
+              echo FAIL
+              exit 1
+            fi
+      - run:
+          name: Frontend smoke test.
+          command: |
+            export URL="http://website-${CIRCLE_WORKFLOW_ID:0:7}.s3-website.${AWS_DEFAULT_REGION}.amazonaws.com"
+            echo "Frontend URL: $URL"
+
+            if curl $URL | grep "GetWise"; then
+              echo SUCCESS
+              exit 0
+            else
+              echo FAIL
+              exit 1
+            fi
+      - destroy-environment:
+          WorkflowID: ${CIRCLE_WORKFLOW_ID:0:7}
+      - revert-cluster:
+          WorkflowID: ${CIRCLE_WORKFLOW_ID:0:7} # todo: attach cache from backend deployment to get service and deployment yaml with new id
+
 #  cloudfront-update:
 #    docker:
 #      - image: amazon/aws-cli
@@ -431,10 +439,10 @@ workflows:
               only: [main]
       - deploy-frontend:
           requires: [deploy-infrastructure]
-#      - deploy-backend:
-#          requires: [run-migrations]
-#      - smoke-test:
-#          requires: [deploy-backend, deploy-frontend]
+      - deploy-backend:
+          requires: [deploy-infrastructure]
+      - smoke-test:
+          requires: [deploy-backend, deploy-frontend]
 #      - cloudfront-update:
 #          requires: [smoke-test]
 #      - cleanup:
