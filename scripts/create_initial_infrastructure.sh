@@ -42,15 +42,21 @@ aws cloudformation create-stack \
 	--template-body file://../.circleci/files/cloudfront.yaml \
 	--parameters file://../.circleci/files/cloudfront-params.json
 
-echo "Create EKS cluster for backend..."
-aws cloudformation create-stack \
-	--stack-name capstone-eks-$uuid \
-	--template-body file://backend-eks.yaml \
-	--parameters file://backend-eks-params.json
-
 echo "Create S3 bucket for images..."
 aws cloudformation create-stack \
 	--stack-name capstone-images-$uuid \
 	--template-body file://image-bucket.yaml \
 	--parameters file://image-bucket-params.json
 echo "IMPORTANT: Images have to be uploaded manually to S3 bucket!"
+
+echo "Create EKS cluster for backend..."
+aws cloudformation create-stack \
+	--stack-name capstone-eks-$uuid \
+	--template-body file://backend-eks.yaml \
+	--parameters file://backend-eks-params.json
+
+echo "Wait for finished creation of EKS stack..."
+aws cloudformation wait stack-create-complete --stack-name capstone-eks-$uuid
+echo "Add AWS users to EKS cluster..."
+aws eks update-kubeconfig --name cluster-$uuid
+kubectl apply -f backend-eks-aws-auth.yaml
