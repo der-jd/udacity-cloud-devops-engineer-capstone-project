@@ -31,6 +31,7 @@ The website is accessible via a AWS Cloudfront distribution.
     * Attach the necessary IAM role / policies to the instance to be able to create and manage the AWS infrastructure (CloudFormation scripts, etc.).
         * Give the EC2 instance admin rights
         * https://docs.aws.amazon.com/prescriptive-guidance/latest/patterns/deploy-an-amazon-eks-cluster-from-aws-cloud9-using-an-ec2-instance-profile.html
+        * https://aws.amazon.com/premiumsupport/knowledge-center/amazon-eks-cluster-access/
         * https://docs.aws.amazon.com/eks/latest/userguide/getting-started-console.html
         * https://docs.aws.amazon.com/eks/latest/userguide/cluster-endpoint.html
         * https://docs.aws.amazon.com/eks/latest/userguide/sec-group-reqs.html
