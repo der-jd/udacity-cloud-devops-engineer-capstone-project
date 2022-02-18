@@ -11,7 +11,11 @@ cd $scriptPath
 # Update kubectl to point to EKS cluster
 aws eks update-kubeconfig --name cluster-$uuid
 
-kubectl create secret generic database-access --from-env-file=/etc/environment
+if kubectl get secret -o name | grep "secret/database-access"; then
+    echo "Secret already exists!"
+else
+    kubectl create secret generic database-access --from-env-file=/etc/environment
+fi
 
 output="$(kubectl apply -f ../backend/backend-deployment.yaml)"
 echo $output
