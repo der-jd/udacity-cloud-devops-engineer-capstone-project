@@ -1,6 +1,6 @@
 version: 2.1
 
-orbs: 
+orbs:
   kubernetes: circleci/kubernetes@1.3.0
 
 commands:
@@ -33,8 +33,11 @@ commands:
           command: |
             # Update kubectl to point to EKS cluster
             aws eks update-kubeconfig --name $CLUSTER_NAME
-            kubectl delete -f ./backend/backend-deployment.yaml
-            # TODO: point service to old K8s resources (old deployment)
+            echo "Delete new deployment..."
+            kubectl delete deploy capstone-deployment-${CIRCLE_WORKFLOW_ID:0:7}
+            echo "Update service selector to old deployment..."
+            sed -i -e 's/${CIRCLE_WORKFLOW_ID:0:7}/$OLD_ID/g' /backend/backend-service.yaml
+            kubectl apply -f /backend/backend-service.yaml
 
 jobs:
   lint-code:
@@ -258,24 +261,28 @@ jobs:
 
   deploy-backend:
     docker:
-      - image: circleci/node:13.8.0
+      - image: amazon/aws-cli
     steps:
       - checkout
-      - run:
-          name: Install dependencies
-          command: |
-            sudo apt update
-            sudo apt upgrade -y
-            sudo apt install -y awscli
+      - kubernetes/install-kubectl
       - run:
           name: Deploy backend
           command: |
             echo "Update deployment and service..."
-            # Grep old id from backend-deployment via kubectl get deploy -o name | grep -o -e ".*capstone.*"
-            # save old id to KVdb as old workflow id
-            # update used container tag to current workflow id
-            # change old id in service and deployment to new id --> new deployment; service gets updated to new deployment --> blue/green deployment
-            # save cache to save changed service and backend yaml file (with new id)
+            aws eks update-kubeconfig --name $CLUSTER_NAME
+
+            echo "Get old id from current deployment name..."
+            export OLD_ID=$(kubectl get deploy -o name | grep -o -e ".*capstone.*")
+            echo "Write old id to KVdb bucket..."
+            curl https://kvdb.io/$KVDB_BUCKET_ID/old_id -d "$OLD_ID" -u $KVDB_WRITE_KEY:$KVDB_WRITE_KEY´
+
+            echo "Update old id by new workflow id in deployment..."
+            sed -i -e 's/$OLD_ID/${CIRCLE_WORKFLOW_ID:0:7}/g' /backend/backend-deployment.yaml
+
+            echo "Update service selector to new deployment (replace old id by new workflow id)..."
+            sed -i -e 's/$OLD_ID/${CIRCLE_WORKFLOW_ID:0:7}/g' /backend/backend-service.yaml
+
+            echo "Apply new deployment and updated service..."
             ./scripts/run_kubernetes_eks.sh
       - destroy-environment:
           WorkflowID: ${CIRCLE_WORKFLOW_ID:0:7}
@@ -345,7 +352,7 @@ jobs:
       - destroy-environment:
           WorkflowID: ${CIRCLE_WORKFLOW_ID:0:7}
       - revert-cluster:
-          WorkflowID: ${CIRCLE_WORKFLOW_ID:0:7} # todo: attach cache from backend deployment to get service and deployment yaml with new id
+          WorkflowID: ${CIRCLE_WORKFLOW_ID:0:7}
 
 #  cloudfront-update:
 #    docker:
