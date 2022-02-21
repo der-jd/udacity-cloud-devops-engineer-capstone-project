@@ -274,7 +274,7 @@ jobs:
             echo "Get old id from current deployment name..."
             export OLD_ID=$(kubectl get deploy -o name | grep -o -e ".*capstone.*")
             echo "Write old id to KVdb bucket..."
-            curl https://kvdb.io/$KVDB_BUCKET_ID/old_id -d "$OLD_ID" -u $KVDB_WRITE_KEY:$KVDB_WRITE_KEY´
+            curl https://kvdb.io/$KVDB_BUCKET_ID/old_id -d "$OLD_ID" -u $KVDB_WRITE_KEY:$KVDB_WRITE_KEY
 
             echo "Update old id by new workflow id in deployment..."
             sed -i -e 's/$OLD_ID/${CIRCLE_WORKFLOW_ID:0:7}/g' /backend/backend-deployment.yaml
