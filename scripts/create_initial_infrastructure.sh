@@ -55,7 +55,7 @@ aws cloudformation create-stack \
 	--template-body file://backend-eks.yaml \
 	--parameters file://backend-eks-params.json
 
-echo "Wait for finished creation of EKS stack. This can take several minutes..."
+echo "Wait for finished creation of EKS stack to give AWS users access to it. This can take several minutes..."
 aws cloudformation wait stack-create-complete --stack-name capstone-eks-$uuid
 echo "Add AWS users to EKS cluster..."
 aws eks update-kubeconfig --name cluster-$uuid
