@@ -38,7 +38,7 @@ The website is accessible via a AWS Cloudfront distribution.
     * Consider resizing storage volume: Run `./scripts/resize.sh`.
     * Or run `./scripts/prepare_ec2_env.sh`.
       This resizes the volume and installs all necessary dependencies.
-      The following steps can be skipped then, **except** the setting of the necessary environment variables for the database access (see below).
+      The following steps can be skipped then, **except** the setting of the necessary environment variables (see below).
     * Restart the EC2 instance to apply the resized volume.
 * Run `make install` to install the necessary dependencies.
 * Run `sudo make install_hadolint` to install hadolint on Linux.
@@ -52,13 +52,19 @@ The website is accessible via a AWS Cloudfront distribution.
     * `curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64`
     * `sudo install minikube-linux-amd64 /usr/local/bin/minikube`
     * `rm minikube-linux-amd64`
-* Set the necessary environment variables for the database access. This step is **always** necessary and must be done even if running `./scripts/prepare_ec2_env.sh`.
+* Set the necessary environment variables. This step is **always** necessary and must be done even if running `./scripts/prepare_ec2_env.sh`.
+    * Database access
     ```
     echo DATABASE_USERNAME="xxx" | sudo tee -a /etc/environment > /dev/null
     echo DATABASE_PASSWORD="xxx" | sudo tee -a /etc/environment > /dev/null
     echo DATABASE_NAME="xxx" | sudo tee -a /etc/environment > /dev/null
     echo DATABASE_HOST="xxx.xxx.eu-central-1.rds.amazonaws.com" | sudo tee -a /etc/environment > /dev/null
     echo DATABASE_PORT="xxx" | sudo tee -a /etc/environment > /dev/null
+    ```
+    * KVdb bucket access
+    ```
+    echo KVDB_BUCKET_ID="xxx" | sudo tee -a /etc/environment > /dev/null
+    echo KVDB_WRITE_KEY="xxx" | sudo tee -a /etc/environment > /dev/null
     ```
 
 # Using the app

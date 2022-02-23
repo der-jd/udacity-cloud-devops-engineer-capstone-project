@@ -3,6 +3,8 @@
 # This file runs a K8s service and deployment with the containerized application in the EKS cluster.
 # Assumes that an image is uploaded to DockerHub via `upload_docker.sh`
 
+source /etc/environment
+
 uuid=1aa940fd-79db-4e9a-9954-ca60c5b021c8
 
 scriptPath=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
@@ -20,6 +22,8 @@ fi
 output="$(kubectl apply -f ../backend/backend-deployment.yaml)"
 echo $output
 kubectl apply -f ../backend/backend-service.yaml
+
+curl https://kvdb.io/$KVDB_BUCKET_ID/old_id -d "$uuid" -u $KVDB_WRITE_KEY:$KVDB_WRITE_KEY
 
 echo "Wait until pods are available..."
 deploymentName="$(echo $output | grep -o -E "^\S+")"
