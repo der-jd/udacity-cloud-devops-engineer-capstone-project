@@ -380,46 +380,27 @@ jobs:
       - revert-cluster:
           WorkflowID: ${CIRCLE_WORKFLOW_ID:0:7}
 
-#  cleanup:
-#    docker:
-#      - image: amazon/aws-cli
-#    steps:
-#      - checkout
-#      - run:
-#          name: Get old stack workflow id
-#          command: |
-#            # Fetch the Old workflow ID
-#            curl -H "token: ${CIRCLE_WORKFLOW_ID}" --request GET https://api.memstash.io/values/OldWorkflowID >> ~/OldWorkflowID.txt
-#            echo OldWorkflowID: $(cat ~/OldWorkflowID.txt)
-#            echo Current Workflow ID: ${CIRCLE_WORKFLOW_ID:0:7}
-#            # Fetch the stack names
-#            aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
-#              --stack-status-filter CREATE_COMPLETE --no-paginate --output text >> ~/stacks.txt
-#            echo Stack names: $(cat ~/stacks.txt)
-#      - run:
-#          name: Remove old stacks and files
-#          command: |
-#            OldWorkflowID=$(cat ~/OldWorkflowID.txt)
-#            Stacks=$(cat ~/stacks.txt)
-#            echo OldWorkflowID: $OldWorkflowID
-#            echo Stack names: ${Stacks[@]}
-#            if [[ "${Stacks[@]}" =~ "${OldWorkflowID}" ]]
-#            then
-#              echo "Destroying environment: ${OldWorkflowID}"
-#              if echo $Stacks | grep -q "udapeople-backend-${OldWorkflowID}"
-#              then
-#                aws cloudformation delete-stack --stack-name udapeople-backend-${OldWorkflowID}
-#              fi
-#              if echo $Stacks | grep -q "udapeople-frontend-${OldWorkflowID}"
-#              then
-#                aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive
-#                aws cloudformation delete-stack --stack-name udapeople-frontend-${OldWorkflowID}
-#              fi
-#            else
-#              echo "--------------- Cannot Cleanup ---------------"
-#            fi
-#
-#
+  cleanup:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - kubernetes/install-kubectl
+      - run:
+          name: Remove old stacks and cluster resources
+          command: |
+            export OLD_ID="$(curl https://kvdb.io/$KVDB_BUCKET_ID/old_id -u $KVDB_READ_KEY:$KVDB_READ_KEY)"
+            echo "Destroying environment: $OLD_ID"
+
+            echo "Empty S3 bucket for static frontend website..."
+            aws s3 rm "s3://website-$OLD_ID" --recursive
+            echo "Delete S3 bucket for static frontend website..."
+            aws cloudformation delete-stack --stack-name capstone-website-$OLD_ID
+
+            aws eks update-kubeconfig --name cluster-$UUID
+            echo "Delete old deployment..."
+            kubectl delete deploy capstone-deployment-$OLD_ID
+
+
 workflows:
   default:
     jobs:
@@ -445,5 +426,5 @@ workflows:
           requires: [deploy-backend, deploy-frontend]
       - cloudfront-update:
           requires: [smoke-test]
-#      - cleanup:
-#          requires: [cloudfront-update]
+      - cleanup:
+          requires: [cloudfront-update]
