@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: capstone-project
-        image: "judt/udacity-cloud-devops-engineer-capstone-project"
+        image: "judt/udacity-cloud-devops-engineer-capstone-project:1aa940fd-79db-4e9a-9954-ca60c5b021c8"
         envFrom:
         - secretRef:
             name: database-access

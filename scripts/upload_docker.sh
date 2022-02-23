@@ -2,10 +2,15 @@
 
 # This file tags and uploads an image to Docker Hub
 # Assumes that an image is built via `run_docker.sh`
+# Param: Tag for the Repository
 
-# Create dockerpath
+if [ -z "$1" ]; then
+    tag=1aa940fd-79db-4e9a-9954-ca60c5b021c8
+else
+    tag=$1
+fi
+
 dockerpath=judt/udacity-cloud-devops-engineer-capstone-project
-
 # Authenticate & tag
 echo "Docker ID and Image: $dockerpath"
 
@@ -15,7 +20,10 @@ if [ -z "$DOCKERHUB_PASSWORD" ]; then
 else
     echo $DOCKERHUB_PASSWORD | docker login --username judt --password-stdin
 fi
-docker tag udacity-project $dockerpath
 
-# Push image to a docker repository
-docker push $dockerpath
+docker tag udacity-project $dockerpath:latest
+docker tag udacity-project $dockerpath:$tag
+
+# Push image to repository
+docker push $dockerpath:latest
+docker push $dockerpath:$tag

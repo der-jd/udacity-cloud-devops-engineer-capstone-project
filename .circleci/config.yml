@@ -169,7 +169,8 @@ jobs:
       - run:
           name: Upload Docker image to repository
           command: |
-            ./scripts/upload_docker.sh # TODO use current workflow id as tag (--> pass as parameter to script). upload initial tag with default uuid as tag id
+            echo "Upload and tag Docker image with new workflow ID..."
+            ./scripts/upload_docker.sh ${CIRCLE_WORKFLOW_ID:0:7}
       - run:
           name: Test backend in Minikube
           command: |
