@@ -244,11 +244,11 @@ jobs:
             echo "Write old id to KVdb bucket..."
             curl https://kvdb.io/$KVDB_BUCKET_ID/old_id -d "$OLD_ID" -u $KVDB_WRITE_KEY:$KVDB_WRITE_KEY
 
-            echo "Update old id by new workflow id in deployment..."
-            sed -i -e 's/$OLD_ID/${CIRCLE_WORKFLOW_ID:0:7}/g' /backend/backend-deployment.yaml
+            echo "Update workflow id in deployment..."
+            sed -i -e 's/$UUID/${CIRCLE_WORKFLOW_ID:0:7}/g' /backend/backend-deployment.yaml
 
-            echo "Update service selector to new deployment (replace old id by new workflow id)..."
-            sed -i -e 's/$OLD_ID/${CIRCLE_WORKFLOW_ID:0:7}/g' /backend/backend-service.yaml
+            echo "Update service selector to new deployment (replace id by new workflow id)..."
+            sed -i -e 's/$UUID/${CIRCLE_WORKFLOW_ID:0:7}/g' /backend/backend-service.yaml
 
             echo "Apply new deployment and updated service..."
             ./scripts/run_kubernetes_eks.sh
