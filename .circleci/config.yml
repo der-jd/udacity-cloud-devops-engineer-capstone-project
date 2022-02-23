@@ -252,6 +252,12 @@ jobs:
 
             echo "Apply new deployment and updated service..."
             ./scripts/run_kubernetes_eks.sh
+      - run:
+          name: Fetch and save LoadBalancer URL of K8s service
+          command: |
+            export LOADBALANCER_URL="http://$(kubectl get $(kubectl get svc -o name | grep -o -e ".*capstone.*") --output jsonpath='{.status.loadBalancer.ingress[0].hostname}'):8000"
+            echo "LOADBALANCER_URL: $LOADBALANCER_URL"
+            curl https://kvdb.io/$KVDB_BUCKET_ID/LoadBalancer_Url -d "$LOADBALANCER_URL" -u $KVDB_WRITE_KEY:$KVDB_WRITE_KEY
       - destroy-environment:
           WorkflowID: ${CIRCLE_WORKFLOW_ID:0:7}
       - revert-cluster:
@@ -264,20 +270,12 @@ jobs:
       - checkout
       - restore_cache:
           keys: [frontend-build]
-      - kubernetes/install-kubectl
       - run:
           name: Install dependencies
           command: |
             sudo apt update
             sudo apt upgrade -y
             sudo apt install -y awscli
-      - run:
-          name: Fetch and save LoadBalancer URL of K8s service
-          command: |
-            aws eks update-kubeconfig --name cluster-$UUID
-            export LOADBALANCER_URL="http://$(kubectl get $(kubectl get svc -o name | grep -o -e ".*capstone.*") --output jsonpath='{.status.loadBalancer.ingress[0].hostname}'):8000"
-            echo "LOADBALANCER_URL: $LOADBALANCER_URL"
-            curl https://kvdb.io/$KVDB_BUCKET_ID/LoadBalancer_Url -d "$LOADBALANCER_URL" -u $KVDB_WRITE_KEY:$KVDB_WRITE_KEY
       - run:
           name: Deploy frontend website
           command: |
