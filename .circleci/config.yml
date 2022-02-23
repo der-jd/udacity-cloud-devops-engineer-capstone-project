@@ -36,6 +36,7 @@ commands:
             echo "Delete new deployment..."
             kubectl delete deploy capstone-deployment-${CIRCLE_WORKFLOW_ID:0:7}
             echo "Update service selector to old deployment..."
+            export OLD_ID="$(curl https://kvdb.io/$KVDB_BUCKET_ID/old_id -u $KVDB_READ_KEY:$KVDB_READ_KEY)"
             sed -i -e 's/${CIRCLE_WORKFLOW_ID:0:7}/$OLD_ID/g' /backend/backend-service.yaml
             kubectl apply -f /backend/backend-service.yaml
 
