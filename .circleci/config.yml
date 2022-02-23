@@ -240,6 +240,7 @@ jobs:
 
             echo "Get old id from current deployment name..."
             export OLD_ID=$(kubectl get deploy -o name | grep -o -e ".*capstone.*")
+            echo "OLD_ID: $OLD_ID"
             echo "Write old id to KVdb bucket..."
             curl https://kvdb.io/$KVDB_BUCKET_ID/old_id -d "$OLD_ID" -u $KVDB_WRITE_KEY:$KVDB_WRITE_KEY
 
