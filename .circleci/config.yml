@@ -213,7 +213,6 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
-      - kubernetes/install-kubectl
       - run:
           name: Create S3 bucket for static frontend website
           command: |
@@ -222,40 +221,6 @@ jobs:
               --template-file .circleci/files/frontend-bucket.yaml \
               --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID:0:7}" \
               --tags project=capstone
-      - run:
-          name: Fetch and save LoadBalancer URL of K8s service
-          command: |
-            aws eks update-kubeconfig --name $CLUSTER_NAME
-            export LOADBALANCER_URL="http://$(kubectl get $(kubectl get svc -o name | grep -o -e ".*capstone.*") --output jsonpath='{.status.loadBalancer.ingress[0].hostname}'):8000"
-            echo "LOADBALANCER_URL: $LOADBALANCER_URL"
-            curl https://kvdb.io/$KVDB_BUCKET_ID/LoadBalancer_Url -d "$LOADBALANCER_URL" -u $KVDB_WRITE_KEY:$KVDB_WRITE_KEY
-      - destroy-environment:
-          WorkflowID: ${CIRCLE_WORKFLOW_ID:0:7}
-
-  deploy-frontend:
-    docker:
-      - image: circleci/node:13.8.0
-    steps:
-      - checkout
-      - restore_cache:
-          keys: [frontend-build]
-      - run:
-          name: Install dependencies
-          command: |
-            sudo apt update
-            sudo apt upgrade -y
-            sudo apt install -y awscli
-      - run:
-          name: Deploy frontend website
-          command: |
-            export LOADBALANCER_URL="$(curl https://kvdb.io/$KVDB_BUCKET_ID/LoadBalancer_Url -u $KVDB_READ_KEY:$KVDB_READ_KEY)"
-            echo "LOADBALANCER_URL: $LOADBALANCER_URL"
-            echo REACT_APP_HOST="$LOADBALANCER_URL" > frontend/.env.production
-            cat frontend/.env.production
-            cd frontend
-            npm install
-            npm run build
-            aws s3 cp build s3://website-${CIRCLE_WORKFLOW_ID:0:7} --recursive
       - destroy-environment:
           WorkflowID: ${CIRCLE_WORKFLOW_ID:0:7}
 
@@ -287,6 +252,41 @@ jobs:
       - destroy-environment:
           WorkflowID: ${CIRCLE_WORKFLOW_ID:0:7}
       - revert-cluster:
+          WorkflowID: ${CIRCLE_WORKFLOW_ID:0:7}
+
+  deploy-frontend:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - restore_cache:
+          keys: [frontend-build]
+      - kubernetes/install-kubectl
+      - run:
+          name: Install dependencies
+          command: |
+            sudo apt update
+            sudo apt upgrade -y
+            sudo apt install -y awscli
+      - run:
+          name: Fetch and save LoadBalancer URL of K8s service
+          command: |
+            aws eks update-kubeconfig --name $CLUSTER_NAME
+            export LOADBALANCER_URL="http://$(kubectl get $(kubectl get svc -o name | grep -o -e ".*capstone.*") --output jsonpath='{.status.loadBalancer.ingress[0].hostname}'):8000"
+            echo "LOADBALANCER_URL: $LOADBALANCER_URL"
+            curl https://kvdb.io/$KVDB_BUCKET_ID/LoadBalancer_Url -d "$LOADBALANCER_URL" -u $KVDB_WRITE_KEY:$KVDB_WRITE_KEY
+      - run:
+          name: Deploy frontend website
+          command: |
+            export LOADBALANCER_URL="$(curl https://kvdb.io/$KVDB_BUCKET_ID/LoadBalancer_Url -u $KVDB_READ_KEY:$KVDB_READ_KEY)"
+            echo "LOADBALANCER_URL: $LOADBALANCER_URL"
+            echo REACT_APP_HOST="$LOADBALANCER_URL" > frontend/.env.production
+            cat frontend/.env.production
+            cd frontend
+            npm install
+            npm run build
+            aws s3 cp build s3://website-${CIRCLE_WORKFLOW_ID:0:7} --recursive
+      - destroy-environment:
           WorkflowID: ${CIRCLE_WORKFLOW_ID:0:7}
 
   smoke-test:
