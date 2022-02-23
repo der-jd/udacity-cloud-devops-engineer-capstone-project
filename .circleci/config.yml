@@ -32,7 +32,7 @@ commands:
           when: on_fail
           command: |
             # Update kubectl to point to EKS cluster
-            aws eks update-kubeconfig --name $CLUSTER_NAME
+            aws eks update-kubeconfig --name cluster-$UUID
             echo "Delete new deployment..."
             kubectl delete deploy capstone-deployment-${CIRCLE_WORKFLOW_ID:0:7}
             echo "Update service selector to old deployment..."
@@ -236,7 +236,7 @@ jobs:
           name: Deploy backend
           command: |
             echo "Update deployment and service..."
-            aws eks update-kubeconfig --name $CLUSTER_NAME
+            aws eks update-kubeconfig --name cluster-$UUID
 
             echo "Get old id from current deployment name..."
             export OLD_ID=$(kubectl get deploy -o name | grep -o -e ".*capstone.*")
@@ -273,7 +273,7 @@ jobs:
       - run:
           name: Fetch and save LoadBalancer URL of K8s service
           command: |
-            aws eks update-kubeconfig --name $CLUSTER_NAME
+            aws eks update-kubeconfig --name cluster-$UUID
             export LOADBALANCER_URL="http://$(kubectl get $(kubectl get svc -o name | grep -o -e ".*capstone.*") --output jsonpath='{.status.loadBalancer.ingress[0].hostname}'):8000"
             echo "LOADBALANCER_URL: $LOADBALANCER_URL"
             curl https://kvdb.io/$KVDB_BUCKET_ID/LoadBalancer_Url -d "$LOADBALANCER_URL" -u $KVDB_WRITE_KEY:$KVDB_WRITE_KEY
@@ -372,7 +372,7 @@ jobs:
           command: |
             aws cloudformation deploy \
               --template-file .circleci/files/cloudfront.yaml \
-              --stack-name capstone-cloudfront-1aa940fd-79db-4e9a-9954-ca60c5b021c8 \
+              --stack-name capstone-cloudfront-$UUID \
               --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID:0:7}" \
               --tags project=capstone
       - destroy-environment:
