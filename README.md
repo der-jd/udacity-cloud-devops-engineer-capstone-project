@@ -14,7 +14,7 @@ Any changes are continuously built and deployed with the CI/CD environment `Circ
 
 # Infrastructure
 
-A graph showing the infrastructure in AWS and the used services can be found [here](./AWS_Infrastructure.png).
+A graph showing the infrastructure and used services in AWS can be found [here](./AWS_Infrastructure.png).
 
 ## Frontend
 The frontend consists of a static website and is deployed via a S3 bucket.
