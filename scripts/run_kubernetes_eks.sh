@@ -23,9 +23,6 @@ output="$(kubectl apply -f ../backend/backend-deployment.yaml)"
 echo $output
 kubectl apply -f ../backend/backend-service.yaml
 
-echo "Write initial id to KVdb bucket..."
-curl https://kvdb.io/$KVDB_BUCKET_ID/old_id -d "$uuid" -u $KVDB_WRITE_KEY:$KVDB_WRITE_KEY
-
 echo "Wait until pods are available..."
 deploymentName="$(echo $output | grep -o -E "^\S+")"
 if kubectl wait --for condition=available --timeout=180s $deploymentName; then
