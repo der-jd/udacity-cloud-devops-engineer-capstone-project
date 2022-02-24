@@ -124,22 +124,29 @@ As database a Postgres-Db is used with AWS RDS. Potential images to the wisdoms 
     * Access frontend via `curl http://hostname` or via web browser.
 
 ## Running CI/CD with CircleCi
-1. Set AWS credentials as environment variables in CircleCi.
-    * `AWS_ACCESS_KEY_ID`
-    * `AWS_SECRET_ACCESS_KEY`
-    * `AWS_DEFAULT_REGION`
-2. Set name of EKS cluster as environment variable in CircleCi.
-    * `CLUSTER_NAME`
-3. Set the access data for the database as environment variables in CircleCi.
-    * `DATABASE_USERNAME`
-    * `DATABASE_PASSWORD`
-    * `DATABASE_NAME`
-    * `DATABASE_HOST`
-    * `DATABASE_PORT`
-4. Set the password for the DockerHub repository as environment variable in CircleCi.
-    * `DOCKERHUB_PASSWORD`
-5. Set the keys to access the KVdb bucket as environment variables in CircleCi (https://kvdb.io/docs/api/).
-    * `KVDB_BUCKET_ID`
-    * `KVDB_SECRET_KEY`
-    * `KVDB_WRITE_KEY`
-    * `KVDB_READ_KEY`
+1. Set the necessary environment variables for the project in CircleCi.
+    * AWS credentials
+        * `AWS_ACCESS_KEY_ID`
+        * `AWS_SECRET_ACCESS_KEY`
+        * `AWS_DEFAULT_REGION`
+    * Name of the EKS cluster
+        * `CLUSTER_NAME`
+    * Database access
+        * `DATABASE_USERNAME`
+        * `DATABASE_PASSWORD`
+        * `DATABASE_NAME`
+        * `DATABASE_HOST`
+        * `DATABASE_PORT`
+    * Password for the DockerHub repository
+        * `DOCKERHUB_PASSWORD`
+    * Access to the KVdb bucket (https://kvdb.io/docs/api/).
+        * `KVDB_BUCKET_ID`
+        * `KVDB_SECRET_KEY`
+        * `KVDB_WRITE_KEY`
+        * `KVDB_READ_KEY`
+2. Set up initial AWS infrastructure (see section `Creating the AWS infrastructure`).
+3. Deploy the initial backend and frontend (see the sections `Running Backend / 4.` and `Running Frontend / 2.`).
+4. Set the initial id in the KVdb bucket:
+    * Get the id via `oldId=$(kubectl get deploy -o name | grep -o -e ".*capstone.*" | sed 's/^.*capstone-deployment-//')`.
+    * Upload the id to the bucket via `curl https://kvdb.io/$KVDB_BUCKET_ID/old_id -d "$oldId" -u $KVDB_WRITE_KEY:$KVDB_WRITE_KEY`.
+5. Start a new CircleCi build or trigger a new build by committing changes to the GitHub repository.
