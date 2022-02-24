@@ -26,8 +26,6 @@ commands:
       WorkflowID:
         type: string
     steps:
-      - kubernetes/install-kubectl:
-          when: on_fail
       - run:
           name: Revert K8s resources
           when: on_fail
@@ -295,17 +293,10 @@ jobs:
 
   smoke-test:
     docker:
-      - image: circleci/node:13.8.0
+      - image: amazon/aws-cli
     steps:
       - checkout
-      - run:
-          name: Install dependencies
-          command: |
-            sudo apt update
-            sudo apt upgrade -y
-            sudo apt install -y curl
-            sudo apt install -y awscli
-            aws --version
+      - kubernetes/install-kubectl
       - run:
           name: Backend smoke test
           command: |
@@ -363,6 +354,7 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
+      - kubernetes/install-kubectl
       - run:
           name: Install dependencies
           command: |
