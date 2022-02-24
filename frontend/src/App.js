@@ -1,4 +1,4 @@
-import logo from './logo.svg';
+import headerImg from './dr-manhattan-7-4KHuge.com_edited.jpg';
 import './App.css';
 import React from "react";
 import styled from 'styled-components';
@@ -39,10 +39,10 @@ class App extends React.Component {
         images[i] = <img key={i.toString()} src={this.state.imageUrls[i]} alt="Descriptive img" />;
 
       wisdomBlock =
-        <div>
-          <pre>{this.state.wisdom}</pre>
-          <p>Source: {this.state.source}</p>
-          <p>Categories: {this.state.categories.join(', ')}</p>
+        <div className="Content-section">
+          <pre className="Wisdom">{this.state.wisdom}</pre>
+          <p className="Wisdom-source">Source: {this.state.source}</p>
+          <p className="Wisdom-categories">Categories: {this.state.categories.join(', ')}</p>
           <div id="images">
             {images}
           </div>
@@ -58,19 +58,14 @@ class App extends React.Component {
     return (
       <div className="App">
         <header className="App-header">
+          <figure>
+            <img src={headerImg} className="App-header-img" alt="header-img" />
+            <figcaption className="App-header-img-source">Source: https://www.4khuge.com/album/dr-manhattan/dr-manhattan-7</figcaption>
+          </figure>
           <h1>GetWise</h1>
           <Button onClick={this.reload}>Reload</Button>
-          {wisdomBlock}
-          <img src={logo} className="App-logo" alt="logo" />
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
         </header>
+        {wisdomBlock}
       </div>
     );
   }
