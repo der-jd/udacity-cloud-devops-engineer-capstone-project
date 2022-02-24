@@ -240,7 +240,7 @@ jobs:
             aws eks update-kubeconfig --name cluster-$UUID
 
             echo "Get old id from current deployment name..."
-            export OLD_ID=$(kubectl get deploy -o name | grep -o -e ".*capstone.*")
+            export OLD_ID=$(kubectl get deploy -o name | grep -o -e ".*capstone.*" | sed 's/^.*capstone-deployment-//') # use 'sed' to replace everything with empty string except the id
             echo "OLD_ID: $OLD_ID"
             echo "Write old id to KVdb bucket..."
             curl https://kvdb.io/$KVDB_BUCKET_ID/old_id -d "$OLD_ID" -u $KVDB_WRITE_KEY:$KVDB_WRITE_KEY
