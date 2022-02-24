@@ -247,9 +247,11 @@ jobs:
 
             echo "Update workflow id in deployment..."
             sed -i -e 's/$UUID/${CIRCLE_WORKFLOW_ID:0:7}/g' ./backend/backend-deployment.yaml
+            cat ./backend/backend-deployment.yaml
 
             echo "Update service selector to new deployment (replace id by new workflow id)..."
             sed -i -e 's/$UUID/${CIRCLE_WORKFLOW_ID:0:7}/g' ./backend/backend-service.yaml
+            cat ./backend/backend-service.yaml
 
             echo "Apply new deployment and updated service..."
             ./scripts/run_kubernetes_eks.sh
