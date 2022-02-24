@@ -49,7 +49,10 @@ class App extends React.Component {
         </div>;
     }
     else {
-      wisdomBlock = <p>Please wait until data is fetched from backend...</p>;
+      wisdomBlock =
+        <div className="Content-section">
+          <p className="API-message">Wait until data is fetched from backend...</p>
+        </div>;
     }
 
     // Return-statement uses JSX (JavaScript Syntax Extension)
