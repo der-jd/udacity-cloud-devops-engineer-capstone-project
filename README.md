@@ -5,20 +5,26 @@
 This is the final capstone project of the Udacity nanodegree `Cloud DevOps Engineer`.
 It creates a website showing a "wisdom" or some knowledge from different topics and categories.
 
-This project implies a backend, frontend and SQL database, all running within `AWS`.
+This project implies a frontend, backend and SQL database, all running within `AWS`.
 
 The necessary infrastructure gets created and updated via AWS Cloudformation scripts (IaC).
 
 Any changes are continuously built and deployed with the CI/CD environment `CircleCi` (https://circleci.com/).
 
-## Backend
-The backend consists of a Python flask app connecting to the SQL database containing the wisdoms. The application itself runs within a Docker container which is deployed via Kubernetes.
 
-As database a Postgres-Db is used with AWS RDS.
+# Infrastructure
+
+A graph showing the infrastructure in AWS and the used services can be found [here](./AWS_Infrastructure.png).
 
 ## Frontend
 The frontend consists of a static website and is deployed via a S3 bucket.
 The website is accessible via a AWS Cloudfront distribution.
+
+## Backend
+The backend consists of a Python flask application connecting to the SQL database containing the wisdoms.
+The application itself runs within a Docker container which is deployed via Kubernetes.
+The access to the API is managed by a Classic Load Balancer service.
+As database a Postgres-Db is used with AWS RDS. Potential images to the wisdoms are saved within a S3 bucket.
 
 
 # Setup the Environment
