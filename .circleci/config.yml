@@ -26,7 +26,8 @@ commands:
       WorkflowID:
         type: string
     steps:
-      - kubernetes/install-kubectl
+      - kubernetes/install-kubectl:
+          when: on_fail
       - run:
           name: Revert K8s resources
           when: on_fail
@@ -304,7 +305,7 @@ jobs:
             sudo apt install -y awscli
             aws --version
       - run:
-          name: Backend smoke test.
+          name: Backend smoke test
           command: |
             export LOADBALANCER_URL="$(curl https://kvdb.io/$KVDB_BUCKET_ID/LoadBalancer_Url -u $KVDB_READ_KEY:$KVDB_READ_KEY)"
             export API_URL="$LOADBALANCER_URL/api/wisdom"
@@ -338,7 +339,7 @@ jobs:
               exit 1
             fi
       - run:
-          name: Frontend smoke test.
+          name: Frontend smoke test
           command: |
             export URL="http://website-${CIRCLE_WORKFLOW_ID:0:7}.s3-website.${AWS_DEFAULT_REGION}.amazonaws.com"
             echo "Frontend URL: $URL"
