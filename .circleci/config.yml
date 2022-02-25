@@ -36,7 +36,7 @@ commands:
             kubectl delete deploy capstone-deployment-${CIRCLE_WORKFLOW_ID:0:7}
             echo "Update service selector to old deployment..."
             export OLD_ID="$(curl https://kvdb.io/$KVDB_BUCKET_ID/old_id -u $KVDB_READ_KEY:$KVDB_READ_KEY)"
-            sed -i -e 's/${CIRCLE_WORKFLOW_ID:0:7}/$OLD_ID/g' ./backend/backend-service.yaml
+            sed -i 's/${CIRCLE_WORKFLOW_ID:0:7}/$OLD_ID/g' ./backend/backend-service.yaml
             kubectl apply -f /backend/backend-service.yaml
 
 jobs:
@@ -244,11 +244,11 @@ jobs:
             curl https://kvdb.io/$KVDB_BUCKET_ID/old_id -d "$OLD_ID" -u $KVDB_WRITE_KEY:$KVDB_WRITE_KEY
 
             echo "Update workflow id in deployment to new id ${CIRCLE_WORKFLOW_ID:0:7}..."
-            sed -i -e 's/$UUID/${CIRCLE_WORKFLOW_ID:0:7}/g' ./backend/backend-deployment.yaml
+            sed -i 's/$UUID/${CIRCLE_WORKFLOW_ID:0:7}/g' ./backend/backend-deployment.yaml
             cat ./backend/backend-deployment.yaml
 
             echo "Update service selector to new deployment (use new workflow id ${CIRCLE_WORKFLOW_ID:0:7})..."
-            sed -i -e 's/$UUID/${CIRCLE_WORKFLOW_ID:0:7}/g' ./backend/backend-service.yaml
+            sed -i 's/$UUID/${CIRCLE_WORKFLOW_ID:0:7}/g' ./backend/backend-service.yaml
             cat ./backend/backend-service.yaml
 
             echo "Apply new deployment and updated service..."
