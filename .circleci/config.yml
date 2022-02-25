@@ -266,17 +266,19 @@ jobs:
 
   deploy-frontend:
     docker:
-      - image: circleci/node:13.8.0
+      - image: amazon/aws-cli
     steps:
       - checkout
       - restore_cache:
           keys: [frontend-build]
+      - kubernetes/install-kubectl
       - run:
           name: Install dependencies
           command: |
-            sudo apt update
-            sudo apt upgrade -y
-            sudo apt install -y awscli
+            yum update -y
+            yum install -y curl
+            yum install -y npm
+            aws --version
       - run:
           name: Deploy frontend website
           command: |
@@ -289,6 +291,8 @@ jobs:
             npm run build
             aws s3 cp build s3://website-${CIRCLE_WORKFLOW_ID:0:7} --recursive
       - destroy-environment:
+          WorkflowID: ${CIRCLE_WORKFLOW_ID:0:7}
+      - revert-cluster:
           WorkflowID: ${CIRCLE_WORKFLOW_ID:0:7}
 
   smoke-test:
