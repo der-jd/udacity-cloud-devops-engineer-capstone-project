@@ -36,7 +36,11 @@ commands:
             kubectl delete deploy capstone-deployment-${CIRCLE_WORKFLOW_ID:0:7}
             export OLD_ID="$(curl https://kvdb.io/$KVDB_BUCKET_ID/old_id -u $KVDB_READ_KEY:$KVDB_READ_KEY)"
             echo "Update service selector to old deployment with id $OLD_ID..."
+            # Search for $CIRCLE_WORKFLOW_ID if file has been changed locally in a previous step
             sed -i "s/${CIRCLE_WORKFLOW_ID:0:7}/$OLD_ID/g" ~/project/backend/backend-service.yaml
+            # Search for $UUID if file has been checked out from repository
+            sed -i "s/$UUID/$OLD_ID/g" ~/project/backend/backend-service.yaml
+            cat ~/project/backend/backend-service.yaml
             kubectl apply -f ~/project/backend/backend-service.yaml
 
 jobs:
