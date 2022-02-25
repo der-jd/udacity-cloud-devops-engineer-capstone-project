@@ -119,7 +119,7 @@ As database a Postgres-Db is used with AWS RDS. Potential images to the wisdoms 
     * Get hostname directly from the S3 bucket website endpoint or from the CloudFront domain name.
     * Access frontend via `curl http://hostname` or via web browser.
 
-## Running CI/CD with CircleCi
+## Running CI/CD pipeline with CircleCi
 1. Set the necessary environment variables for the project in CircleCi.
     * AWS credentials
         * `AWS_ACCESS_KEY_ID`
