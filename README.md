@@ -22,7 +22,7 @@ The website is accessible via a AWS Cloudfront distribution.
 
 ## Backend
 The backend consists of a Python flask application connecting to the SQL database containing the wisdoms.
-The application itself runs within a Docker container which is deployed via Elastic Kubernetes Service. The images are stored in a DockerHub repository.
+The application itself runs within a Docker container which is deployed via Elastic Kubernetes Service. The Docker images are stored in a DockerHub repository.
 The access to the API is managed by a Classic Load Balancer service.
 As database a Postgres-Db is used with AWS RDS. Potential images to the wisdoms are saved within a S3 bucket.
 
