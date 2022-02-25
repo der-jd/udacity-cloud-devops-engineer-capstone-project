@@ -283,6 +283,10 @@ jobs:
             apt-get upgrade -y
             apt-get install -y curl
             apt-get install -y unzip
+            curl -sL https://deb.nodesource.com/setup_16.x -o ~/nodesource_setup.sh # necessary to install nodejs v16
+            chmod +x ~/nodesource_setup.sh
+            ~/nodesource_setup.sh
+            apt-get install -y nodejs
             apt-get install -y npm
             curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o ~/awscliv2.zip
             unzip ~/awscliv2.zip
