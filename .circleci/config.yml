@@ -271,7 +271,6 @@ jobs:
       - checkout
       - restore_cache:
           keys: [frontend-build]
-      - kubernetes/install-kubectl
       - run:
           name: Install dependencies
           command: |
@@ -285,6 +284,7 @@ jobs:
             unzip ~/awscliv2.zip
             ./aws/install
             aws --version
+      - kubernetes/install-kubectl
       - run:
           name: Deploy frontend website
           command: |
