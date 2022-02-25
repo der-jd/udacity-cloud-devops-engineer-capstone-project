@@ -67,11 +67,7 @@ As database a Postgres-Db is used with AWS RDS. Potential images to the wisdoms 
     echo DATABASE_HOST="xxx.xxx.eu-central-1.rds.amazonaws.com" | sudo tee -a /etc/environment > /dev/null
     echo DATABASE_PORT="xxx" | sudo tee -a /etc/environment > /dev/null
     ```
-    * KVdb bucket access
-    ```
-    echo KVDB_BUCKET_ID="xxx" | sudo tee -a /etc/environment > /dev/null
-    echo KVDB_WRITE_KEY="xxx" | sudo tee -a /etc/environment > /dev/null
-    ```
+
 
 # Using the app
 
@@ -146,7 +142,4 @@ As database a Postgres-Db is used with AWS RDS. Potential images to the wisdoms 
         * `KVDB_READ_KEY`
 2. Set up initial AWS infrastructure (see section `Creating the AWS infrastructure`).
 3. Deploy the initial backend and frontend (see the sections `Running Backend / 4.` and `Running Frontend / 2.`).
-4. Set the initial id in the KVdb bucket:
-    * Get the id via `oldId=$(kubectl get deploy -o name | grep -o -e ".*capstone.*" | sed 's/^.*capstone-deployment-//')`.
-    * Upload the id to the bucket via `curl https://kvdb.io/$KVDB_BUCKET_ID/old_id -d "$oldId" -u $KVDB_WRITE_KEY:$KVDB_WRITE_KEY`.
-5. Start a new CircleCi build or trigger a new build by committing changes to the GitHub repository.
+4. Start a new CircleCi build or trigger a new build by committing changes to the GitHub repository.
