@@ -6,5 +6,5 @@ cd $scriptPath
 kubectl cluster-info
 
 kubectl delete -f ../backend/backend-service.yaml
-kubectl delete -f ../backend/backend-deployment.yaml
+kubectl delete --all deploy -n default
 kubectl delete secret database-access
