@@ -79,7 +79,57 @@ As database a Postgres-Db is used with AWS RDS. Potential images to the wisdoms 
     * Manually upload any images to the S3 bucket for image storage.
 * Delete the infrastructure with `./scripts/delete_initial_infrastructure.sh`.
 
-## Create Database // TODO
+## Create Database
+* Connect to the AWS RDS Postgres database via a command line tool, e.g. `psql`.
+* Install extension to create UUIDs.
+    * `CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`
+* Create tables.
+    * Table for wisdoms
+    ```
+    CREATE TABLE Wisdoms (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    content TEXT NOT NULL,
+    source TEXT,
+    dateAdded TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+    );
+    ```
+    * Table for categories
+    ```
+    CREATE TABLE Categories (
+    wisdomId UUID NOT NULL,
+    category TEXT NOT NULL
+    );
+    ```
+    * Table for images
+    ```
+    CREATE TABLE Images (
+    wisdomId UUID NOT NULL,
+    imageUrl TEXT NOT NULL
+    );
+    ```
+* Insert data into tables.
+    * Insert wisdoms
+    ```
+    INSERT INTO Wisdoms (content, source)
+    VALUES ('some wisdom or principle...','a source...'),
+	       (E'some wisdom or\nprinciple\nwith linebreaks','a source...'),
+	       (E'...','...');
+    ```
+    * Insert categories
+    ```
+    INSERT INTO Categories (wisdomId, category)
+    VALUES ('id of wisdom 1','category A'),
+           ('id of wisdom 2','category A'),
+           ('id of wisdom 2','category B'),
+           ('id of wisdom 2','category C'),
+           ('id of wisdom 3','category B'),
+           ('id of wisdom 3','category D');
+    ```
+    * Insert images
+    ```
+    INSERT INTO Images (wisdomId, imageUrl)
+    VALUES ('id of a wisdom with an image','URL to the image stored in the S3 image bucket');
+    ```
 
 ## Running Backend
 1. Standalone locally:
