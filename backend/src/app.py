@@ -74,6 +74,8 @@ def wisdom():
     #    html += f"<img src=\"" + u + "\" alt=\"Descriptive img\" />\n"
     #return html.format(format)
 
+    unusedVar = 0
+
     return jsonify({"wisdom": wisdom_, "source": source, "categories": categories, "image-urls": imageUrls})
 
 if __name__ == "__main__":
